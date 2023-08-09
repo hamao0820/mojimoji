@@ -13,6 +13,28 @@ export type Action =
     | { type: 'delete' }
     | { type: 'fix' };
 
+const canMoveRight = (controllableList: Moji[], MojiList: Moji[]) => {
+    return controllableList.every((moji) => {
+        if (moji.position.x === 5) return false;
+        const index = MojiList.findIndex(
+            (v) => v.position.x === moji.position.x + 1 && v.position.y === moji.position.y
+        );
+        if (index !== -1) return false;
+        return true;
+    });
+};
+
+const canMoveLeft = (controllableList: Moji[], MojiList: Moji[]) => {
+    return controllableList.every((moji) => {
+        if (moji.position.x === 0) return false;
+        const index = MojiList.findIndex(
+            (v) => v.position.x === moji.position.x - 1 && v.position.y === moji.position.y
+        );
+        if (index !== -1) return false;
+        return true;
+    });
+};
+
 const reducer: Reducer<Moji[], Action> = (prev: Moji[], action: Action): Moji[] => {
     switch (action.type) {
         case 'fall': {
@@ -32,10 +54,33 @@ const reducer: Reducer<Moji[], Action> = (prev: Moji[], action: Action): Moji[] 
             return prev;
         }
         case 'moveRight': {
-            return prev;
+            const newState = [...prev];
+            const controllableList = prev.filter((moji) => moji.controllable);
+            if (canMoveRight(controllableList, prev)) {
+                for (const controllable of controllableList) {
+                    const index = prev.findIndex(
+                        (v) => v.position.x === controllable.position.x && v.position.y === controllable.position.y
+                    );
+                    if (index === -1) continue;
+                    newState[index].position.x++;
+                }
+            }
+            return newState;
         }
         case 'moveLeft': {
-            return prev;
+            const newState = [...prev];
+            const controllableList = prev.filter((moji) => moji.controllable);
+            if (canMoveLeft(controllableList, prev)) {
+                for (const controllable of controllableList) {
+                    const index = prev.findIndex(
+                        (v) => v.position.x === controllable.position.x && v.position.y === controllable.position.y
+                    );
+                    if (index === -1) continue;
+                    newState[index].position.x--;
+                }
+            }
+
+            return newState;
         }
         case 'add': {
             return [...prev, { position: action.payload.position, char: action.payload.char, controllable: true }];

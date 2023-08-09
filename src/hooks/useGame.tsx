@@ -1,10 +1,10 @@
 import { useCallback, useEffect } from 'react';
 import useMojiList, { Moji } from './useMojiList';
 
-export type Position = { x: 0 | 1 | 2 | 3 | 4 | 5 | 6; y: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 };
+export type Position = { x: 0 | 1 | 2 | 3 | 4 | 5; y: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 };
 export type Grid = (Moji | null)[][];
 
-const timeout = 1000;
+const interval = 800;
 
 const grid: Grid = Array.from({ length: 13 }, () => Array.from({ length: 6 }, () => null));
 const checkGameOver = (grid: Grid) => grid.every((row) => row[2] !== null);
@@ -44,19 +44,24 @@ const useGame = () => {
         });
     }, [dispatch]);
 
-    // const handleLR = (e: KeyboardEvent) => {
-    //     switch (e.key) {
-    //         case 'ArrowRight': {
-    //             break;
-    //         }
-    //         case 'ArrowLeft': {
-    //             break;
-    //         }
-    //         default: {
-    //             break;
-    //         }
-    //     }
-    // };
+    const handleLR = useCallback(
+        (e: KeyboardEvent) => {
+            switch (e.key) {
+                case 'ArrowRight': {
+                    dispatch({ type: 'moveRight' });
+                    break;
+                }
+                case 'ArrowLeft': {
+                    dispatch({ type: 'moveLeft' });
+                    break;
+                }
+                default: {
+                    break;
+                }
+            }
+        },
+        [dispatch]
+    );
 
     useEffect(() => {
         for (let i = 0; i < 13; i++) {
@@ -74,20 +79,22 @@ const useGame = () => {
             console.log('game over');
             return;
         }
-        const id = setTimeout(() => {
+        const id = setInterval(() => {
             dispatch({ type: 'fall' });
             if (checkFallDone(grid)) {
                 dispatch({ type: 'fix' });
                 appearMoji();
             }
-        }, timeout);
+        }, interval);
 
-        return () => clearTimeout(id);
-    }, [dispatch, appearMoji, mojiList]);
+        return () => clearInterval(id);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
-    // useEffect(() => {
-    //     document.addEventListener('keydown', handleLR);
-    // }, []);
+    useEffect(() => {
+        document.addEventListener('keydown', handleLR);
+        return () => document.removeEventListener('keydown', handleLR);
+    }, [handleLR]);
 
     return { grid };
 };
