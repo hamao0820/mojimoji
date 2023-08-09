@@ -18,7 +18,7 @@ export const game = style({
     justifyContent: 'center',
     alignItems: 'center',
 });
-export const board = style({ width: 450, height: 650 });
+
 export const next = style({ width: 150, height: 250 });
 export const controller = style({ width: 150, height: 400 });
 export const info = style({ width: '45vw', height: '90vh' });
