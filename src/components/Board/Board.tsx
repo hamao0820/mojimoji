@@ -9,9 +9,12 @@ type Props = {
 const Board: FC<Props> = ({ positions }) => {
     return (
         <div className={board}>
-            {positions.flat().map((s, i) => (
-                <Square moji={s} key={i} />
-            ))}
+            {positions
+                .slice(1)
+                .flat()
+                .map((s, i) => (
+                    <Square moji={s} key={i} />
+                ))}
         </div>
     );
 };
