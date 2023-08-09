@@ -1,9 +1,10 @@
 import { FC } from 'react';
 import { board } from './Board.css';
 import Square from './Square';
+import { Grid } from '../../hooks/useGame';
 
 type Props = {
-    positions: string[][];
+    positions: Grid;
 };
 
 const Board: FC<Props> = ({ positions }) => {
@@ -12,9 +13,9 @@ const Board: FC<Props> = ({ positions }) => {
             {positions
                 .slice(1)
                 .flat()
-                .map((s, i) => (
-                    <Square moji={s} key={i} />
-                ))}
+                .map((s, i) =>
+                    s.filled ? <Square moji={s.moji?.char ?? ''} key={i} /> : <Square moji={''} key={i} />
+                )}
         </div>
     );
 };
