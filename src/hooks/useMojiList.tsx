@@ -10,7 +10,8 @@ export type Action =
     | { type: 'moveRight' }
     | { type: 'moveLeft' }
     | { type: 'add'; payload: { position: Position; char: string } }
-    | { type: 'delete' };
+    | { type: 'delete' }
+    | { type: 'fix' };
 
 const reducer: Reducer<Moji[], Action> = (prev: Moji[], action: Action): Moji[] => {
     switch (action.type) {
@@ -41,6 +42,11 @@ const reducer: Reducer<Moji[], Action> = (prev: Moji[], action: Action): Moji[] 
         }
         case 'delete': {
             return prev;
+        }
+        case 'fix': {
+            return [...prev].map((moji) => {
+                return { ...moji, controllable: false };
+            });
         }
     }
 };

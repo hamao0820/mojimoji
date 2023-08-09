@@ -19,7 +19,7 @@ const checkFallDone = (grid: Grid) => {
             done = true;
             continue;
         }
-        done = column.slice(maxMojiY).every((v) => v !== null);
+        done = column.slice(maxMojiY + 1).every((v) => v !== null);
     }
     return done;
 };
@@ -74,12 +74,13 @@ const useGame = () => {
             console.log('game over');
             return;
         }
-
-        if (checkFallDone(grid)) {
-            const id = setTimeout(() => appearMoji(), timeout);
-            return () => clearTimeout(id);
-        }
-        const id = setTimeout(() => dispatch({ type: 'fall' }), timeout);
+        const id = setTimeout(() => {
+            dispatch({ type: 'fall' });
+            if (checkFallDone(grid)) {
+                dispatch({ type: 'fix' });
+                appearMoji();
+            }
+        }, timeout);
 
         return () => clearTimeout(id);
     }, [dispatch, appearMoji, mojiList]);
