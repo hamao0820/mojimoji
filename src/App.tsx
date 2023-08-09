@@ -3,11 +3,11 @@ import Board from './components/Board/Board';
 import useGame from './hooks/useGame';
 
 function App() {
-    const { positions } = useGame();
+    const { grid } = useGame();
     return (
         <div className={body}>
             <div className={game}>
-                <Board positions={positions} />
+                <Board grid={grid} />
                 <div>
                     <div className={next}></div>
                     <div className={controller}></div>

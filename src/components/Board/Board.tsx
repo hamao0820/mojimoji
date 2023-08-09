@@ -4,18 +4,16 @@ import Square from './Square';
 import { Grid } from '../../hooks/useGame';
 
 type Props = {
-    positions: Grid;
+    grid: Grid;
 };
 
-const Board: FC<Props> = ({ positions }) => {
+const Board: FC<Props> = ({ grid }) => {
     return (
         <div className={board}>
-            {positions
+            {grid
                 .slice(1)
                 .flat()
-                .map((s, i) =>
-                    s.filled ? <Square moji={s.moji?.char ?? ''} key={i} /> : <Square moji={''} key={i} />
-                )}
+                .map((s, i) => (s ? <Square moji={s.char} key={i} /> : <Square moji={''} key={i} />))}
         </div>
     );
 };
