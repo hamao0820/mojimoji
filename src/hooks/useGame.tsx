@@ -4,7 +4,7 @@ import useMojiList, { Moji } from './useMojiList';
 export type Position = { x: 0 | 1 | 2 | 3 | 4 | 5; y: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 };
 export type Grid = (Moji | null)[][];
 
-const interval = 800;
+const interval = 300;
 
 const grid: Grid = Array.from({ length: 13 }, () => Array.from({ length: 6 }, () => null));
 const checkGameOver = (grid: Grid) => grid.every((row) => row[2] !== null);
@@ -75,11 +75,12 @@ const useGame = () => {
     }, [mojiList]);
 
     useEffect(() => {
-        if (checkGameOver(grid)) {
-            console.log('game over');
-            return;
-        }
         const id = setInterval(() => {
+            if (checkGameOver(grid)) {
+                console.log('game over');
+                clearInterval(id);
+                return;
+            }
             dispatch({ type: 'fall' });
             if (checkFallDone(grid)) {
                 dispatch({ type: 'fix' });
