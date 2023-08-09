@@ -1,8 +1,10 @@
 import { FC } from 'react';
 import { square } from './Square.css';
 
-const Square: FC = () => {
-    return <div className={square}>あ</div>;
+type Props = { moji: string };
+
+const Square: FC<Props> = ({ moji }) => {
+    return <div className={square}>{moji}</div>;
 };
 
 export default Square;

@@ -2,11 +2,15 @@ import { FC } from 'react';
 import { board } from './Board.css';
 import Square from './Square';
 
-const Board: FC = () => {
+type Props = {
+    positions: string[][];
+};
+
+const Board: FC<Props> = ({ positions }) => {
     return (
         <div className={board}>
-            {Array.from<number, number>({ length: 6 * 12 }, (i) => i).map((i) => (
-                <Square key={i} />
+            {positions.flat().map((s, i) => (
+                <Square moji={s} key={i} />
             ))}
         </div>
     );
