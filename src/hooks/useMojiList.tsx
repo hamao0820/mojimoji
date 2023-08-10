@@ -180,6 +180,67 @@ const canTurnLeftToTop = (controllableList: Moji[], mojiList: Moji[]): boolean =
     );
 };
 
+const canTurnTopToLeft = (controllableList: Moji[], mojiList: Moji[]): boolean => {
+    const child = controllableList.find((moji) => !moji.axis);
+    if (!child) {
+        console.log('childが見つかりませんでした');
+        return false;
+    }
+    if (child.position.x === 0) return false;
+    return mojiList.every(
+        (v) =>
+            v.position.x !== child.position.x - 1 ||
+            (v.position.y !== child.position.y + 1 &&
+                v.position.y !== child.position.y + 2 &&
+                v.position.y !== child.position.y + 3)
+    );
+};
+const canTurnLeftToBottom = (controllableList: Moji[], mojiList: Moji[]): boolean => {
+    const child = controllableList.find((moji) => !moji.axis);
+    if (!child) {
+        console.log('childが見つかりませんでした');
+        return false;
+    }
+    if (child.position.y >= 24) return false;
+    return mojiList.every(
+        (v) =>
+            v.position.x !== child.position.x + 1 ||
+            (v.position.y !== child.position.y + 1 &&
+                v.position.y !== child.position.y + 2 &&
+                v.position.y !== child.position.y + 3)
+    );
+};
+const canTurnBottomToRight = (controllableList: Moji[], mojiList: Moji[]): boolean => {
+    const child = controllableList.find((moji) => !moji.axis);
+    if (!child) {
+        console.log('childが見つかりませんでした');
+        return false;
+    }
+    if (child.position.x === 5) return false;
+    return mojiList.every(
+        (v) =>
+            v.position.x !== child.position.x + 1 ||
+            (v.position.y !== child.position.y - 1 &&
+                v.position.y !== child.position.y - 2 &&
+                v.position.y !== child.position.y - 3)
+    );
+};
+const canTurnRightToTop = (controllableList: Moji[], mojiList: Moji[]): boolean => {
+    const child = controllableList.find((moji) => !moji.axis);
+    if (!child) {
+        console.log('childが見つかりませんでした');
+        return false;
+    }
+    if (child.position.y === 0) return false;
+    return mojiList.every(
+        (v) =>
+            v.position.x !== child.position.x - 1 ||
+            (v.position.y !== child.position.y - 1 &&
+                v.position.y !== child.position.y - 2 &&
+                v.position.y !== child.position.y - 3)
+    );
+};
+
 const reducer: Reducer<Moji[], Action> = (prev: Moji[], action: Action): Moji[] => {
     switch (action.type) {
         case 'fall': {
@@ -233,7 +294,66 @@ const reducer: Reducer<Moji[], Action> = (prev: Moji[], action: Action): Moji[] 
             return newState;
         }
         case 'turnLeft': {
-            return prev;
+            const newState = structuredClone(prev);
+            const controllableList = prev.filter((moji) => moji.controllable);
+            const child = controllableList.find((moji) => !moji.axis);
+            if (!child) {
+                console.log('childが見つかりませんでした');
+                return prev;
+            }
+            const childRelativePosition = getChildRelativePosition(controllableList as [Moji, Moji]);
+            switch (childRelativePosition) {
+                case 'bottom': {
+                    if (canTurnBottomToRight(controllableList, prev)) {
+                        const index = prev.findIndex((v) => child.id === v.id);
+                        if (index === -1) {
+                            console.log('childが見つかりませんでした');
+                            return prev;
+                        }
+                        newState[index].position.x += 1;
+                        newState[index].position.y -= 2;
+                    }
+                    return newState;
+                }
+                case 'left': {
+                    if (canTurnLeftToBottom(controllableList, prev)) {
+                        const index = prev.findIndex((v) => v.id === child.id);
+                        if (index === -1) {
+                            console.log('childが見つかりませんでした');
+                            return prev;
+                        }
+                        newState[index].position.x += 1;
+                        newState[index].position.y += 2;
+                    }
+                    return newState;
+                }
+                case 'top': {
+                    if (canTurnTopToLeft(controllableList, prev)) {
+                        const index = prev.findIndex((v) => child.id === v.id);
+                        if (index === -1) {
+                            console.log('childが見つかりませんでした');
+                            return prev;
+                        }
+                        newState[index].position.x -= 1;
+                        newState[index].position.y += 2;
+                    }
+                    return newState;
+                }
+                case 'right': {
+                    if (canTurnRightToTop(controllableList, prev)) {
+                        const index = prev.findIndex((v) => child.id === v.id);
+                        if (index === -1) {
+                            console.log('childが見つかりませんでした');
+                            return prev;
+                        }
+                        newState[index].position.x -= 1;
+                        newState[index].position.y -= 2;
+                    }
+                    return newState;
+                }
+                default:
+                    return prev;
+            }
         }
         case 'turnRight': {
             const newState = structuredClone(prev);
@@ -293,8 +413,10 @@ const reducer: Reducer<Moji[], Action> = (prev: Moji[], action: Action): Moji[] 
                     }
                     return newState;
                 }
+                default: {
+                    return prev;
+                }
             }
-            return prev;
         }
         case 'add': {
             return [

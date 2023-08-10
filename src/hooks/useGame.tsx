@@ -114,11 +114,20 @@ const useGame = () => {
         (e: KeyboardEvent) => {
             if (checkGameOver(grid)) return;
             if (e.repeat) return;
-            switch (e.key) {
-                case 'ArrowUp': {
-                    dispatch({ type: 'turnRight' });
-                    break;
-                }
+            console.log(e.key);
+            if (e.key === 'ArrowUp' || e.key === 'x') {
+                dispatch({ type: 'turnRight' });
+            }
+        },
+        [dispatch, grid]
+    );
+
+    const handleTurnLeft = useCallback(
+        (e: KeyboardEvent) => {
+            if (checkGameOver(grid)) return;
+            if (e.repeat) return;
+            if (e.key === 'z') {
+                dispatch({ type: 'turnLeft' });
             }
         },
         [dispatch, grid]
@@ -175,6 +184,11 @@ const useGame = () => {
         document.addEventListener('keydown', handleTurnRight);
         return () => document.removeEventListener('keydown', handleTurnRight);
     }, [handleTurnRight]);
+
+    useEffect(() => {
+        document.addEventListener('keydown', handleTurnLeft);
+        return () => document.removeEventListener('keydown', handleTurnLeft);
+    }, [handleTurnLeft]);
     return { grid, mojiList };
 };
 
