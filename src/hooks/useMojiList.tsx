@@ -296,6 +296,7 @@ const reducer: Reducer<Moji[], Action> = (prev: Moji[], action: Action): Moji[] 
         case 'turnLeft': {
             const newState = structuredClone(prev);
             const controllableList = prev.filter((moji) => moji.controllable);
+            if (controllableList.length === 0) return prev;
             const child = controllableList.find((moji) => !moji.axis);
             if (!child) {
                 console.log('childが見つかりませんでした');
@@ -358,6 +359,7 @@ const reducer: Reducer<Moji[], Action> = (prev: Moji[], action: Action): Moji[] 
         case 'turnRight': {
             const newState = structuredClone(prev);
             const controllableList = prev.filter((moji) => moji.controllable);
+            if (controllableList.length === 0) return prev;
             const child = controllableList.find((moji) => !moji.axis);
             if (!child) {
                 console.log('childが見つかりませんでした');

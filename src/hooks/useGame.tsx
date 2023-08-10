@@ -61,8 +61,10 @@ const checkControllable = (grid: Grid): boolean => {
             if (moji.controllable) controllablePositions.push({ y: i, x: j } as Position);
         })
     );
+    if (controllablePositions.length === 0) return false;
     for (const position of controllablePositions) {
         if (position.y === 25) return false;
+        if (position.y === 24) continue;
         const moji = grid[position.y + 2][position.x];
         if (!moji) continue;
         if (!moji.controllable) return false;
@@ -99,6 +101,7 @@ const useGame = () => {
     const handleLR = useCallback(
         (e: KeyboardEvent) => {
             if (checkGameOver(grid)) return;
+            if (!checkControllable(grid)) return;
             switch (e.key) {
                 case 'ArrowRight': {
                     dispatch({ type: 'moveRight' });
@@ -119,6 +122,7 @@ const useGame = () => {
     const handleDown = useCallback(
         (e: KeyboardEvent) => {
             if (checkGameOver(grid)) return;
+            if (!checkControllable(grid)) return;
             if (e.key === 'ArrowDown') {
                 dispatch({ type: 'moveDown' });
             }
@@ -129,6 +133,7 @@ const useGame = () => {
     const handleTurnRight = useCallback(
         (e: KeyboardEvent) => {
             if (checkGameOver(grid)) return;
+            if (!checkControllable(grid)) return;
             if (e.repeat) return;
             if (e.key === 'ArrowUp' || e.key === 'x') {
                 dispatch({ type: 'turnRight' });
@@ -140,6 +145,7 @@ const useGame = () => {
     const handleTurnLeft = useCallback(
         (e: KeyboardEvent) => {
             if (checkGameOver(grid)) return;
+            if (!checkControllable(grid)) return;
             if (e.repeat) return;
             if (e.key === 'z') {
                 dispatch({ type: 'turnLeft' });
