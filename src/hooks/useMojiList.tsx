@@ -17,7 +17,9 @@ const canMoveRight = (controllableList: Moji[], MojiList: Moji[]) => {
     return controllableList.every((moji) => {
         if (moji.position.x === 5) return false;
         const index = MojiList.findIndex(
-            (v) => v.position.x === moji.position.x + 1 && v.position.y === moji.position.y
+            (v) =>
+                v.position.x === moji.position.x + 1 &&
+                (v.position.y === moji.position.y || v.position.y === moji.position.y + 1)
         );
         if (index !== -1) return false;
         return true;
@@ -28,7 +30,9 @@ const canMoveLeft = (controllableList: Moji[], MojiList: Moji[]) => {
     return controllableList.every((moji) => {
         if (moji.position.x === 0) return false;
         const index = MojiList.findIndex(
-            (v) => v.position.x === moji.position.x - 1 && v.position.y === moji.position.y
+            (v) =>
+                v.position.x === moji.position.x - 1 &&
+                (v.position.y === moji.position.y || v.position.y === moji.position.y + 1)
         );
         if (index !== -1) return false;
         return true;
@@ -41,10 +45,10 @@ const reducer: Reducer<Moji[], Action> = (prev: Moji[], action: Action): Moji[] 
             const sorted = [...prev].sort((a, b) => b.position.y - a.position.y);
             for (let i = 0; i < prev.length; i++) {
                 const moji = sorted[i];
-                if (moji.position.y === 12) continue;
+                if (moji.position.y === 25) continue;
                 const index = sorted
                     .slice(0, i)
-                    .findIndex((v) => v.position.y === moji.position.y + 1 && v.position.x === moji.position.x);
+                    .findIndex((v) => v.position.y === moji.position.y + 2 && v.position.x === moji.position.x);
                 if (index !== -1) continue;
                 sorted[i].position.y++;
             }

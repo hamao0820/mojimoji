@@ -1,40 +1,64 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import useMojiList, { Moji } from './useMojiList';
 
-export type Position = { x: 0 | 1 | 2 | 3 | 4 | 5; y: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 };
+export type Position = {
+    x: 0 | 1 | 2 | 3 | 4 | 5;
+    y:
+        | 0
+        | 1
+        | 2
+        | 3
+        | 4
+        | 5
+        | 6
+        | 7
+        | 8
+        | 9
+        | 10
+        | 11
+        | 12
+        | 13
+        | 14
+        | 15
+        | 16
+        | 17
+        | 18
+        | 19
+        | 20
+        | 21
+        | 22
+        | 23
+        | 24
+        | 25;
+};
 export type Grid = (Moji | null)[][];
 
-const interval = 300;
+const interval = 500;
 
-const grid: Grid = Array.from({ length: 13 }, () => Array.from({ length: 6 }, () => null));
-const checkGameOver = (grid: Grid) => grid.every((row) => row[2] !== null);
+const checkGameOver = (grid: Grid) => grid.every((row, i) => i % 2 === 0 || row[2] !== null);
 
 const checkFallDone = (grid: Grid) => {
     let done = true;
     for (let i = 0; i < 6; i++) {
         if (!done) return false;
         const column = grid.map((row) => row[i]);
+        if (column.some((moji) => moji && moji.position.y % 2 === 0)) return false;
         const maxMojiY = column.findIndex((v) => v !== null);
         if (maxMojiY === -1) {
             done = true;
             continue;
         }
-        done = column.slice(maxMojiY + 1).every((v) => v !== null);
+        done = column.slice(maxMojiY + 2).every((v, i) => i % 2 === maxMojiY % 2 || v !== null);
     }
     return done;
 };
 
 const useGame = () => {
     const { mojiList, dispatch } = useMojiList();
+    const [initialTime] = useState(Date.now());
+    const [grid, setGrid] = useState<Grid>(Array.from({ length: 26 }, () => Array.from({ length: 6 }, () => null)));
 
     const appearMoji = useCallback(() => {
-        dispatch({
-            type: 'add',
-            payload: {
-                position: { y: 0, x: 2 },
-                char: [...'アイウエオ'][Math.floor(Math.random() * 5)],
-            },
-        });
         dispatch({
             type: 'add',
             payload: {
@@ -42,10 +66,18 @@ const useGame = () => {
                 char: [...'アイウエオ'][Math.floor(Math.random() * 5)],
             },
         });
+        dispatch({
+            type: 'add',
+            payload: {
+                position: { y: 3, x: 2 },
+                char: [...'アイウエオ'][Math.floor(Math.random() * 5)],
+            },
+        });
     }, [dispatch]);
 
     const handleLR = useCallback(
         (e: KeyboardEvent) => {
+            if (checkGameOver(grid)) return;
             switch (e.key) {
                 case 'ArrowRight': {
                     dispatch({ type: 'moveRight' });
@@ -60,44 +92,52 @@ const useGame = () => {
                 }
             }
         },
-        [dispatch]
+        [dispatch, grid]
     );
 
     useEffect(() => {
-        for (let i = 0; i < 13; i++) {
-            for (let j = 0; j < 6; j++) {
-                grid[i][j] = null;
+        setGrid(() => {
+            const newState: (Moji | null)[][] = Array.from({ length: 26 }, () => Array.from({ length: 6 }, () => null));
+            for (const moji of mojiList) {
+                newState[moji.position.y][moji.position.x] = moji;
             }
-        }
-        for (const moji of mojiList) {
-            grid[moji.position.y][moji.position.x] = moji;
-        }
+            return newState;
+        });
     }, [mojiList]);
 
     useEffect(() => {
-        const id = setInterval(() => {
-            if (checkGameOver(grid)) {
-                console.log('game over');
-                clearInterval(id);
-                return;
-            }
+        const now = Date.now();
+        let nextTime = now + interval - ((now - initialTime) % interval);
+        if (checkGameOver(grid)) {
+            console.log('game over');
+            // dispatch({ type: 'fix' });
+            return;
+        }
+        const loop = () => {
             dispatch({ type: 'fall' });
             if (checkFallDone(grid)) {
                 dispatch({ type: 'fix' });
                 appearMoji();
             }
-        }, interval);
+            const now = Date.now();
+            nextTime = now + interval - ((nextTime - now) % interval);
+            const diff = nextTime - now;
 
-        return () => clearInterval(id);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+            timerId = setTimeout(loop, diff);
+        };
+        const diff = nextTime - now;
+        let timerId = setTimeout(loop, diff);
+        return () => {
+            clearTimeout(timerId);
+        };
+    }, [appearMoji, dispatch, grid, initialTime]);
 
     useEffect(() => {
         document.addEventListener('keydown', handleLR);
         return () => document.removeEventListener('keydown', handleLR);
     }, [handleLR]);
 
-    return { grid };
+    return { grid, mojiList };
 };
 
 export default useGame;
