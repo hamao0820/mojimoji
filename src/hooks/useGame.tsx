@@ -37,8 +37,7 @@ const interval = 500;
 
 const checkGameOver = (grid: Grid) => grid.every((row, i) => i % 2 === 0 || row[2] !== null);
 
-// FIXME: どちらかがついた後に動くのを修正
-const checkFallDone = (grid: Grid) => {
+const checkAllMojiHaveFallen = (grid: Grid): boolean => {
     let done = true;
     for (let i = 0; i < 6; i++) {
         if (!done) return false;
@@ -52,6 +51,23 @@ const checkFallDone = (grid: Grid) => {
         done = column.slice(maxMojiY + 2).every((v, i) => i % 2 === maxMojiY % 2 || v !== null);
     }
     return done;
+};
+
+const checkControllable = (grid: Grid): boolean => {
+    const controllablePositions: Position[] = [];
+    grid.forEach((row, i) =>
+        row.forEach((moji, j) => {
+            if (!moji) return;
+            if (moji.controllable) controllablePositions.push({ y: i, x: j } as Position);
+        })
+    );
+    for (const position of controllablePositions) {
+        if (position.y === 25) return false;
+        const moji = grid[position.y + 2][position.x];
+        if (!moji) continue;
+        if (!moji.controllable) return false;
+    }
+    return true;
 };
 
 const useGame = () => {
@@ -114,7 +130,6 @@ const useGame = () => {
         (e: KeyboardEvent) => {
             if (checkGameOver(grid)) return;
             if (e.repeat) return;
-            console.log(e.key);
             if (e.key === 'ArrowUp' || e.key === 'x') {
                 dispatch({ type: 'turnRight' });
             }
@@ -153,7 +168,10 @@ const useGame = () => {
         }
         const loop = () => {
             dispatch({ type: 'fall' });
-            if (checkFallDone(grid)) {
+            if (!checkControllable(grid)) {
+                dispatch({ type: 'fix' });
+            }
+            if (checkAllMojiHaveFallen(grid)) {
                 dispatch({ type: 'fix' });
                 appearMoji();
             }
