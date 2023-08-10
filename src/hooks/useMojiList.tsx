@@ -1,7 +1,13 @@
 import { Reducer, useReducer } from 'react';
 import { Position } from './useGame';
 
-export type Moji = { position: Position; char: string; controllable: boolean; axis: boolean; id: string };
+export type Moji = {
+    position: Position;
+    char: string;
+    controllable: boolean;
+    axis: boolean;
+    id: `${string}-${string}-${string}-${string}-${string}`;
+};
 type ChildRelativePosition = 'top' | 'right' | 'bottom' | 'left';
 export type Action =
     | {
@@ -12,8 +18,16 @@ export type Action =
     | { type: 'moveLeft' }
     | { type: 'turnRight' }
     | { type: 'turnLeft' }
-    | { type: 'add'; payload: { position: Position; char: string; axis: boolean; id: string } }
-    | { type: 'delete' }
+    | {
+          type: 'add';
+          payload: {
+              position: Position;
+              char: string;
+              axis: boolean;
+              id: `${string}-${string}-${string}-${string}-${string}`;
+          };
+      }
+    | { type: 'delete'; payload: { idList: `${string}-${string}-${string}-${string}-${string}`[] } }
     | { type: 'fix' };
 
 const canMoveRight = (controllableList: Moji[], MojiList: Moji[]) => {
@@ -433,7 +447,7 @@ const reducer: Reducer<Moji[], Action> = (prev: Moji[], action: Action): Moji[] 
             ];
         }
         case 'delete': {
-            return prev;
+            return prev.filter((moji) => !action.payload.idList.includes(moji.id));
         }
         case 'fix': {
             return [...prev].map((moji) => {

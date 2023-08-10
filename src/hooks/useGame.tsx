@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import useMojiList, { Moji } from './useMojiList';
+import { getCorrectWordsAndLines } from '../utility/judgeWord';
 
 export type Position = {
     x: 0 | 1 | 2 | 3 | 4 | 5;
@@ -172,6 +173,14 @@ const useGame = () => {
             }
             if (checkAllMojiHaveFallen(grid)) {
                 dispatch({ type: 'fix' });
+                const wordsAndLines = getCorrectWordsAndLines(grid);
+                for (const [, line] of wordsAndLines) {
+                    const idList = line
+                        .map((pos) => grid[pos.y][pos.x])
+                        .filter((moji): moji is Moji => !!moji)
+                        .map((moji) => moji.id);
+                    dispatch({ type: 'delete', payload: { idList: idList } });
+                }
                 appearMoji();
             }
             const now = Date.now();

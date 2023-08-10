@@ -125,5 +125,5 @@ export const getAllJoinedWordsAndLine = (grid: Grid): [string, Position[]][] =>
         .map<[string, Position[]]>((line) => [getLineJoinedWord(grid, line), line])
         .filter(([word]) => word !== '');
 
-export const getCorrectWords = (grid: Grid): [string, Position[]][] =>
+export const getCorrectWordsAndLines = (grid: Grid): [string, Position[]][] =>
     getAllJoinedWordsAndLine(grid).filter(([word]) => correctWords.includes(word));
