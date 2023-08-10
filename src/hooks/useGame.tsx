@@ -181,6 +181,8 @@ const useGame = () => {
             timerId = setTimeout(loop, diff);
         };
         const diff = nextTime - now;
+        if (!checkControllable(grid) && !checkAllMojiHaveFallen(grid))
+            setTimeout(() => dispatch({ type: 'fall' }), diff);
         let timerId = setTimeout(loop, diff);
         return () => {
             clearTimeout(timerId);
