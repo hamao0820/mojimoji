@@ -82,11 +82,12 @@ const useGame = () => {
     }
 
     const appearMoji = useCallback(() => {
+        const charList = [...'ーウイシクツヨキリカ'];
         dispatch({
             type: 'add',
             payload: {
                 position: { y: 1, x: 2 },
-                char: [...'ンウイシクツヨキリカー'][Math.floor(Math.random() * 11)],
+                char: charList[Math.floor(Math.random() * charList.length)],
                 axis: false,
                 id: crypto.randomUUID(),
             },
@@ -95,7 +96,7 @@ const useGame = () => {
             type: 'add',
             payload: {
                 position: { y: 3, x: 2 },
-                char: [...'ンウイシクツヨキリカー'][Math.floor(Math.random() * 11)],
+                char: charList[Math.floor(Math.random() * charList.length)],
                 axis: true,
                 id: crypto.randomUUID(),
             },
@@ -179,7 +180,9 @@ const useGame = () => {
                         .map((pos) => grid[pos.y][pos.x])
                         .filter((moji): moji is Moji => !!moji)
                         .map((moji) => moji.id);
-                    dispatch({ type: 'delete', payload: { idList: idList } });
+                    for (const id of idList) {
+                        dispatch({ type: 'delete', payload: { id } });
+                    }
                 }
                 appearMoji();
             }

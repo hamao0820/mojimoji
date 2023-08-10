@@ -27,7 +27,7 @@ export type Action =
               id: `${string}-${string}-${string}-${string}-${string}`;
           };
       }
-    | { type: 'delete'; payload: { idList: `${string}-${string}-${string}-${string}-${string}`[] } }
+    | { type: 'delete'; payload: { id: `${string}-${string}-${string}-${string}-${string}` } }
     | { type: 'fix' };
 
 const canMoveRight = (controllableList: Moji[], MojiList: Moji[]) => {
@@ -447,7 +447,7 @@ const reducer: Reducer<Moji[], Action> = (prev: Moji[], action: Action): Moji[] 
             ];
         }
         case 'delete': {
-            return prev.filter((moji) => !action.payload.idList.includes(moji.id));
+            return prev.filter((moji) => action.payload.id !== moji.id);
         }
         case 'fix': {
             return [...prev].map((moji) => {
