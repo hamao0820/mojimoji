@@ -1,14 +1,12 @@
 import { FC, Fragment } from 'react';
 import { board, cell } from './Board.css';
-import { Moji } from '../../hooks/useMojiList';
-import useGame from '../../hooks/useGame';
+import { Grid } from '../../hooks/useGame';
 
 type Props = {
-    MojiList: Moji[];
+    grid: Grid;
 };
 
-const Board: FC<Props> = () => {
-    const { grid } = useGame();
+const Board: FC<Props> = ({ grid }) => {
     return (
         <div className={board}>
             {grid.slice(2).map((row, i) => (
