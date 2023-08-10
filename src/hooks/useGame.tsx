@@ -110,6 +110,7 @@ const useGame = () => {
     const handleTurnRight = useCallback(
         (e: KeyboardEvent) => {
             if (checkGameOver(grid)) return;
+            if (e.repeat) return;
             switch (e.key) {
                 case 'ArrowUp': {
                     dispatch({ type: 'turnRight' });
