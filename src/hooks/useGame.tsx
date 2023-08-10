@@ -37,6 +37,7 @@ const interval = 500;
 
 const checkGameOver = (grid: Grid) => grid.every((row, i) => i % 2 === 0 || row[2] !== null);
 
+// FIXME: どちらかがついた後に動くのを修正
 const checkFallDone = (grid: Grid) => {
     let done = true;
     for (let i = 0; i < 6; i++) {
@@ -65,6 +66,7 @@ const useGame = () => {
                 position: { y: 1, x: 2 },
                 char: [...'アイウエオ'][Math.floor(Math.random() * 5)],
                 axis: false,
+                id: crypto.randomUUID(),
             },
         });
         dispatch({
@@ -73,6 +75,7 @@ const useGame = () => {
                 position: { y: 3, x: 2 },
                 char: [...'アイウエオ'][Math.floor(Math.random() * 5)],
                 axis: true,
+                id: crypto.randomUUID(),
             },
         });
     }, [dispatch]);

@@ -1,7 +1,7 @@
 import { Reducer, useReducer } from 'react';
 import { Position } from './useGame';
 
-export type Moji = { position: Position; char: string; controllable: boolean; axis: boolean };
+export type Moji = { position: Position; char: string; controllable: boolean; axis: boolean; id: string };
 type ChildRelativePosition = 'top' | 'right' | 'bottom' | 'left';
 export type Action =
     | {
@@ -12,33 +12,86 @@ export type Action =
     | { type: 'moveLeft' }
     | { type: 'turnRight' }
     | { type: 'turnLeft' }
-    | { type: 'add'; payload: { position: Position; char: string; axis: boolean } }
+    | { type: 'add'; payload: { position: Position; char: string; axis: boolean; id: string } }
     | { type: 'delete' }
     | { type: 'fix' };
 
-// TODO: 左右に並んでいる時の判定を修正
 const canMoveRight = (controllableList: Moji[], MojiList: Moji[]) => {
-    return controllableList.every((moji) => {
-        if (moji.position.x === 5) return false;
-        const index = MojiList.findIndex(
-            (v) =>
-                v.position.x === moji.position.x + 1 &&
-                (v.position.y === moji.position.y || v.position.y === moji.position.y + 1)
-        );
-        return index === -1;
-    });
+    const axis = controllableList.find((moji) => moji.axis);
+    const child = controllableList.find((moji) => !moji.axis);
+    if (!axis || !child) return false;
+    const childRelativePosition = getChildRelativePosition(controllableList as [Moji, Moji]);
+    switch (childRelativePosition) {
+        case 'top':
+        case 'bottom': {
+            return controllableList.every((moji) => {
+                if (moji.position.x === 5) return false;
+                const index = MojiList.findIndex(
+                    (v) =>
+                        v.position.x === moji.position.x + 1 &&
+                        (v.position.y === moji.position.y || v.position.y === moji.position.y + 1)
+                );
+                return index === -1;
+            });
+        }
+        case 'right': {
+            if (child.position.x === 5) return false;
+            const index = MojiList.findIndex(
+                (v) =>
+                    v.position.x === child.position.x + 1 &&
+                    (v.position.y === child.position.y || v.position.y === child.position.y + 1)
+            );
+            return index === -1;
+        }
+        case 'left': {
+            if (axis.position.x === 5) return false;
+            const index = MojiList.findIndex(
+                (v) =>
+                    v.position.x === axis.position.x + 1 &&
+                    (v.position.y === axis.position.y || v.position.y === axis.position.y + 1)
+            );
+            return index === -1;
+        }
+    }
 };
 
 const canMoveLeft = (controllableList: Moji[], MojiList: Moji[]) => {
-    return controllableList.every((moji) => {
-        if (moji.position.x === 0) return false;
-        const index = MojiList.findIndex(
-            (v) =>
-                v.position.x === moji.position.x - 1 &&
-                (v.position.y === moji.position.y || v.position.y === moji.position.y + 1)
-        );
-        return index === -1;
-    });
+    const axis = controllableList.find((moji) => moji.axis);
+    const child = controllableList.find((moji) => !moji.axis);
+    if (!axis || !child) return false;
+    const childRelativePosition = getChildRelativePosition(controllableList as [Moji, Moji]);
+    switch (childRelativePosition) {
+        case 'top':
+        case 'bottom': {
+            return controllableList.every((moji) => {
+                if (moji.position.x === 0) return false;
+                const index = MojiList.findIndex(
+                    (v) =>
+                        v.position.x === moji.position.x - 1 &&
+                        (v.position.y === moji.position.y || v.position.y === moji.position.y + 1)
+                );
+                return index === -1;
+            });
+        }
+        case 'right': {
+            if (axis.position.x === 0) return false;
+            const index = MojiList.findIndex(
+                (v) =>
+                    v.position.x === axis.position.x - 1 &&
+                    (v.position.y === axis.position.y || v.position.y === axis.position.y + 1)
+            );
+            return index === -1;
+        }
+        case 'left': {
+            if (child.position.x === 0) return false;
+            const index = MojiList.findIndex(
+                (v) =>
+                    v.position.x === child.position.x - 1 &&
+                    (v.position.y === child.position.y || v.position.y === child.position.y + 1)
+            );
+            return index === -1;
+        }
+    }
 };
 
 const canMoveDown = (controllableList: Moji[], MojiList: Moji[]) => {
@@ -147,24 +200,19 @@ const reducer: Reducer<Moji[], Action> = (prev: Moji[], action: Action): Moji[] 
             const controllableList = prev.filter((moji) => moji.controllable);
             if (canMoveDown(controllableList, prev)) {
                 for (const controllable of controllableList) {
-                    const index = prev.findIndex(
-                        (v) => v.position.x === controllable.position.x && v.position.y === controllable.position.y
-                    );
+                    const index = prev.findIndex((v) => controllable.id === v.id);
                     if (index === -1) continue;
                     newState[index].position.y++;
                 }
             }
             return newState;
         }
-        // TODO; 左右に並んでいるときも動くようにの修正
         case 'moveRight': {
             const newState = [...prev];
             const controllableList = prev.filter((moji) => moji.controllable);
             if (canMoveRight(controllableList, prev)) {
                 for (const controllable of controllableList) {
-                    const index = prev.findIndex(
-                        (v) => v.position.x === controllable.position.x && v.position.y === controllable.position.y
-                    );
+                    const index = prev.findIndex((v) => controllable.id === v.id);
                     if (index === -1) continue;
                     newState[index].position.x++;
                 }
@@ -176,9 +224,7 @@ const reducer: Reducer<Moji[], Action> = (prev: Moji[], action: Action): Moji[] 
             const controllableList = prev.filter((moji) => moji.controllable);
             if (canMoveLeft(controllableList, prev)) {
                 for (const controllable of controllableList) {
-                    const index = prev.findIndex(
-                        (v) => v.position.x === controllable.position.x && v.position.y === controllable.position.y
-                    );
+                    const index = prev.findIndex((v) => controllable.id === v.id);
                     if (index === -1) continue;
                     newState[index].position.x--;
                 }
@@ -201,9 +247,7 @@ const reducer: Reducer<Moji[], Action> = (prev: Moji[], action: Action): Moji[] 
             switch (childRelativePosition) {
                 case 'bottom': {
                     if (canTurnBottomToLeft(controllableList, prev)) {
-                        const index = prev.findIndex(
-                            (v) => v.position.x === child.position.x && v.position.y === child.position.y
-                        );
+                        const index = prev.findIndex((v) => child.id === v.id);
                         if (index === -1) {
                             console.log('childが見つかりませんでした');
                             return prev;
@@ -215,9 +259,7 @@ const reducer: Reducer<Moji[], Action> = (prev: Moji[], action: Action): Moji[] 
                 }
                 case 'left': {
                     if (canTurnLeftToTop(controllableList, prev)) {
-                        const index = prev.findIndex(
-                            (v) => v.position.x === child.position.x && v.position.y === child.position.y
-                        );
+                        const index = prev.findIndex((v) => v.id === child.id);
                         if (index === -1) {
                             console.log('childが見つかりませんでした');
                             return prev;
@@ -229,9 +271,7 @@ const reducer: Reducer<Moji[], Action> = (prev: Moji[], action: Action): Moji[] 
                 }
                 case 'top': {
                     if (canTurnTopToRight(controllableList, prev)) {
-                        const index = prev.findIndex(
-                            (v) => v.position.x === child.position.x && v.position.y === child.position.y
-                        );
+                        const index = prev.findIndex((v) => child.id === v.id);
                         if (index === -1) {
                             console.log('childが見つかりませんでした');
                             return prev;
@@ -243,9 +283,7 @@ const reducer: Reducer<Moji[], Action> = (prev: Moji[], action: Action): Moji[] 
                 }
                 case 'right': {
                     if (canTurnRightToBottom(controllableList, prev)) {
-                        const index = prev.findIndex(
-                            (v) => v.position.x === child.position.x && v.position.y === child.position.y
-                        );
+                        const index = prev.findIndex((v) => child.id === v.id);
                         if (index === -1) {
                             console.log('childが見つかりませんでした');
                             return prev;
@@ -266,6 +304,7 @@ const reducer: Reducer<Moji[], Action> = (prev: Moji[], action: Action): Moji[] 
                     char: action.payload.char,
                     controllable: true,
                     axis: action.payload.axis,
+                    id: action.payload.id,
                 },
             ];
         }
