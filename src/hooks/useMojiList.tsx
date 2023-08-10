@@ -21,8 +21,7 @@ const canMoveRight = (controllableList: Moji[], MojiList: Moji[]) => {
                 v.position.x === moji.position.x + 1 &&
                 (v.position.y === moji.position.y || v.position.y === moji.position.y + 1)
         );
-        if (index !== -1) return false;
-        return true;
+        return index === -1;
     });
 };
 
@@ -34,8 +33,19 @@ const canMoveLeft = (controllableList: Moji[], MojiList: Moji[]) => {
                 v.position.x === moji.position.x - 1 &&
                 (v.position.y === moji.position.y || v.position.y === moji.position.y + 1)
         );
-        if (index !== -1) return false;
-        return true;
+        return index === -1;
+    });
+};
+
+const canMoveDown = (controllableList: Moji[], MojiList: Moji[]) => {
+    return controllableList.every((moji) => {
+        if (moji.position.y === 25) return false;
+        const index = MojiList.findIndex(
+            (v) =>
+                v.position.x === moji.position.x &&
+                (v.position.y === moji.position.y + 1 || (v.position.y === moji.position.y + 2 && !v.controllable))
+        );
+        return index === -1;
     });
 };
 
@@ -55,7 +65,18 @@ const reducer: Reducer<Moji[], Action> = (prev: Moji[], action: Action): Moji[] 
             return sorted;
         }
         case 'moveDown': {
-            return prev;
+            const newState = [...prev];
+            const controllableList = prev.filter((moji) => moji.controllable);
+            if (canMoveDown(controllableList, prev)) {
+                for (const controllable of controllableList) {
+                    const index = prev.findIndex(
+                        (v) => v.position.x === controllable.position.x && v.position.y === controllable.position.y
+                    );
+                    if (index === -1) continue;
+                    newState[index].position.y++;
+                }
+            }
+            return newState;
         }
         case 'moveRight': {
             const newState = [...prev];

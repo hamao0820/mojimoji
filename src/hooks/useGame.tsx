@@ -95,6 +95,16 @@ const useGame = () => {
         [dispatch, grid]
     );
 
+    const handleDown = useCallback(
+        (e: KeyboardEvent) => {
+            if (checkGameOver(grid)) return;
+            if (e.key === 'ArrowDown') {
+                dispatch({ type: 'moveDown' });
+            }
+        },
+        [dispatch, grid]
+    );
+
     useEffect(() => {
         setGrid(() => {
             const newState: (Moji | null)[][] = Array.from({ length: 26 }, () => Array.from({ length: 6 }, () => null));
@@ -136,6 +146,11 @@ const useGame = () => {
         document.addEventListener('keydown', handleLR);
         return () => document.removeEventListener('keydown', handleLR);
     }, [handleLR]);
+
+    useEffect(() => {
+        document.addEventListener('keydown', handleDown);
+        return () => document.removeEventListener('keydown', handleDown);
+    }, [handleDown]);
 
     return { grid, mojiList };
 };
