@@ -64,6 +64,7 @@ const useGame = () => {
             payload: {
                 position: { y: 1, x: 2 },
                 char: [...'アイウエオ'][Math.floor(Math.random() * 5)],
+                axis: false,
             },
         });
         dispatch({
@@ -71,6 +72,7 @@ const useGame = () => {
             payload: {
                 position: { y: 3, x: 2 },
                 char: [...'アイウエオ'][Math.floor(Math.random() * 5)],
+                axis: true,
             },
         });
     }, [dispatch]);
@@ -100,6 +102,19 @@ const useGame = () => {
             if (checkGameOver(grid)) return;
             if (e.key === 'ArrowDown') {
                 dispatch({ type: 'moveDown' });
+            }
+        },
+        [dispatch, grid]
+    );
+
+    const handleTurnRight = useCallback(
+        (e: KeyboardEvent) => {
+            if (checkGameOver(grid)) return;
+            switch (e.key) {
+                case 'ArrowUp': {
+                    dispatch({ type: 'turnRight' });
+                    break;
+                }
             }
         },
         [dispatch, grid]
@@ -152,6 +167,10 @@ const useGame = () => {
         return () => document.removeEventListener('keydown', handleDown);
     }, [handleDown]);
 
+    useEffect(() => {
+        document.addEventListener('keydown', handleTurnRight);
+        return () => document.removeEventListener('keydown', handleTurnRight);
+    }, [handleTurnRight]);
     return { grid, mojiList };
 };
 
