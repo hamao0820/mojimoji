@@ -75,7 +75,10 @@ const checkControllable = (grid: Grid): boolean => {
 const useGame = () => {
     const { mojiList, dispatch } = useMojiList();
     const [initialTime] = useState(Date.now());
-    const [grid, setGrid] = useState<Grid>(Array.from({ length: 26 }, () => Array.from({ length: 6 }, () => null)));
+    const grid: Grid = Array.from({ length: 26 }, () => Array.from({ length: 6 }, () => null));
+    for (const moji of mojiList) {
+        grid[moji.position.y][moji.position.x] = moji;
+    }
 
     const appearMoji = useCallback(() => {
         dispatch({
@@ -153,16 +156,6 @@ const useGame = () => {
         },
         [dispatch, grid]
     );
-
-    useEffect(() => {
-        setGrid(() => {
-            const newState: (Moji | null)[][] = Array.from({ length: 26 }, () => Array.from({ length: 6 }, () => null));
-            for (const moji of mojiList) {
-                newState[moji.position.y][moji.position.x] = moji;
-            }
-            return newState;
-        });
-    }, [mojiList]);
 
     useEffect(() => {
         const now = Date.now();
