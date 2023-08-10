@@ -85,7 +85,7 @@ const useGame = () => {
             type: 'add',
             payload: {
                 position: { y: 1, x: 2 },
-                char: [...'アイウエオ'][Math.floor(Math.random() * 5)],
+                char: [...'ンウイシクツヨキリカー'][Math.floor(Math.random() * 11)],
                 axis: false,
                 id: crypto.randomUUID(),
             },
@@ -94,7 +94,7 @@ const useGame = () => {
             type: 'add',
             payload: {
                 position: { y: 3, x: 2 },
-                char: [...'アイウエオ'][Math.floor(Math.random() * 5)],
+                char: [...'ンウイシクツヨキリカー'][Math.floor(Math.random() * 11)],
                 axis: true,
                 id: crypto.randomUUID(),
             },
