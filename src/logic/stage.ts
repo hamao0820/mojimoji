@@ -1,16 +1,16 @@
 import { Config } from './config';
-import { PuyoOnStage, PuyoColor, PuyoPosition } from './puyo';
+import { MojiOnStage, MojiColor, MojiPosition } from './moji';
 
-type FallingPuyo = {
-    position: PuyoPosition;
+type FallingMoji = {
+    position: MojiPosition;
     destinationTop: number;
     falling: boolean;
 };
 
-type PuyoInfo = {
+type MojiInfo = {
     x: number;
     y: number;
-    puyo: PuyoOnStage;
+    moji: MojiOnStage;
 };
 
 type ZenkeshiAnimationState = {
@@ -19,11 +19,11 @@ type ZenkeshiAnimationState = {
 };
 
 export class Stage {
-    static board: (null | PuyoOnStage)[][];
-    private static fallingPuyoList: FallingPuyo[];
+    static board: (null | MojiOnStage)[][];
+    private static fallingMojiList: FallingMoji[];
     private static eraseStartFrame: number;
-    private static erasingPuyoInfoList: PuyoOnStage[];
-    private static erasingPuyoIsHidden: boolean;
+    private static erasingMojiInfoList: MojiOnStage[];
+    private static erasingMojiIsHidden: boolean;
     private static zenkeshiShowStartFrame: number | null;
     private static zenkeshiHideStartFrame: number | null;
 
@@ -36,20 +36,20 @@ export class Stage {
                 this.board[y][x] = null;
             }
         }
-        this.fallingPuyoList = [];
-        this.erasingPuyoInfoList = [];
+        this.fallingMojiList = [];
+        this.erasingMojiInfoList = [];
         this.zenkeshiShowStartFrame = null;
         this.zenkeshiHideStartFrame = null;
     }
 
-    static getFixedPuyos(): PuyoOnStage[] {
-        return this.board.flat().filter((cell) => cell !== null) as PuyoOnStage[];
+    static getFixedMojis(): MojiOnStage[] {
+        return this.board.flat().filter((cell) => cell !== null) as MojiOnStage[];
     }
 
-    static getErasingPuyos(): PuyoOnStage[] {
-        return this.erasingPuyoInfoList.map((puyo) => ({
-            ...puyo,
-            hidden: this.erasingPuyoIsHidden,
+    static getErasingMojis(): MojiOnStage[] {
+        return this.erasingMojiInfoList.map((moji) => ({
+            ...moji,
+            hidden: this.erasingMojiIsHidden,
         }));
     }
 
@@ -70,22 +70,22 @@ export class Stage {
         return { showRatio, hideRatio };
     }
 
-    // メモリに puyo をセットする
-    static setPuyo(x: number, y: number, puyo: PuyoColor, puyoId: number) {
+    // メモリに moji をセットする
+    static setMoji(x: number, y: number, moji: MojiColor, mojiId: number) {
         // メモリにセットする
         this.board[y][x] = {
-            puyoId,
-            color: puyo,
+            mojiId,
+            color: moji,
             position: {
-                left: x * Config.puyoImgWidth,
-                top: y * Config.puyoImgHeight,
+                left: x * Config.mojiImgWidth,
+                top: y * Config.mojiImgHeight,
             },
         };
     }
 
     // 自由落下をチェックする
     static checkFall() {
-        this.fallingPuyoList.length = 0;
+        this.fallingMojiList.length = 0;
         let isFalling = false;
         // 下の行から上の行を見ていく
         for (let y = Config.stageRows - 2; y >= 0; y--) {
@@ -106,9 +106,9 @@ export class Stage {
                     // 最終目的地に置く
                     this.board[dst][x] = cell;
                     // 落ちるリストに入れる
-                    this.fallingPuyoList.push({
+                    this.fallingMojiList.push({
                         position: cell.position,
-                        destinationTop: dst * Config.puyoImgHeight,
+                        destinationTop: dst * Config.mojiImgHeight,
                         falling: true,
                     });
                     // 落ちるものがあったことを記録しておく
@@ -121,23 +121,23 @@ export class Stage {
     // 自由落下させる
     static fall() {
         let isFalling = false;
-        for (const fallingPuyo of this.fallingPuyoList) {
-            if (!fallingPuyo.falling) {
+        for (const fallingMoji of this.fallingMojiList) {
+            if (!fallingMoji.falling) {
                 // すでに自由落下が終わっている
                 continue;
             }
-            let top = fallingPuyo.position.top;
+            let top = fallingMoji.position.top;
             top += Config.freeFallingSpeed;
-            if (top >= fallingPuyo.destinationTop) {
+            if (top >= fallingMoji.destinationTop) {
                 // 自由落下終了
-                top = fallingPuyo.destinationTop;
-                fallingPuyo.falling = false;
+                top = fallingMoji.destinationTop;
+                fallingMoji.falling = false;
             } else {
                 // まだ落下しているぷよがあることを記録する
                 isFalling = true;
             }
             // ぷよを動かす
-            fallingPuyo.position.top = top;
+            fallingMoji.position.top = top;
         }
         return isFalling;
     }
@@ -145,26 +145,26 @@ export class Stage {
     // 消せるかどうか判定する
     static checkErase(startFrame: number) {
         this.eraseStartFrame = startFrame;
-        this.erasingPuyoInfoList.length = 0;
+        this.erasingMojiInfoList.length = 0;
 
         // 何色のぷよを消したかを記録する
-        const erasedPuyoColor: Partial<Record<PuyoColor, boolean>> = {};
+        const erasedMojiColor: Partial<Record<MojiColor, boolean>> = {};
 
         // 隣接ぷよを確認する関数内関数を作成
-        const sequencePuyoInfoList: PuyoInfo[] = [];
-        const existingPuyoInfoList: PuyoInfo[] = [];
-        const checkSequentialPuyo = (x: number, y: number) => {
+        const sequenceMojiInfoList: MojiInfo[] = [];
+        const existingMojiInfoList: MojiInfo[] = [];
+        const checkSequentialMoji = (x: number, y: number) => {
             // ぷよがあるか確認する
-            const origPuyo = this.board[y][x];
-            if (!origPuyo) {
+            const origMoji = this.board[y][x];
+            if (!origMoji) {
                 // ないなら何もしない
                 return;
             }
             // あるなら一旦退避して、メモリ上から消す
-            sequencePuyoInfoList.push({
+            sequenceMojiInfoList.push({
                 x: x,
                 y: y,
-                puyo: origPuyo,
+                moji: origMoji,
             });
             this.board[y][x] = null;
 
@@ -183,48 +183,48 @@ export class Stage {
                     continue;
                 }
                 const cell = this.board[dy][dx];
-                if (!cell || cell.color !== origPuyo.color) {
+                if (!cell || cell.color !== origMoji.color) {
                     // ぷよの色が違う
                     continue;
                 }
                 // そのぷよのまわりのぷよも消せるか確認する
-                checkSequentialPuyo(dx, dy);
+                checkSequentialMoji(dx, dy);
             }
         };
 
         // 実際に削除できるかの確認を行う
         for (let y = 0; y < Config.stageRows; y++) {
             for (let x = 0; x < Config.stageCols; x++) {
-                sequencePuyoInfoList.length = 0;
-                const puyoColor = this.board[y][x]?.color;
-                checkSequentialPuyo(x, y);
-                if (sequencePuyoInfoList.length == 0 || sequencePuyoInfoList.length < Config.erasePuyoCount) {
+                sequenceMojiInfoList.length = 0;
+                const mojiColor = this.board[y][x]?.color;
+                checkSequentialMoji(x, y);
+                if (sequenceMojiInfoList.length == 0 || sequenceMojiInfoList.length < Config.eraseMojiCount) {
                     // 連続して並んでいる数が足りなかったので消さない
-                    if (sequencePuyoInfoList.length) {
+                    if (sequenceMojiInfoList.length) {
                         // 退避していたぷよを消さないリストに追加する
-                        existingPuyoInfoList.push(...sequencePuyoInfoList);
+                        existingMojiInfoList.push(...sequenceMojiInfoList);
                     }
                 } else {
-                    if (!puyoColor) {
-                        throw new Error('puyoColor must be truthy');
+                    if (!mojiColor) {
+                        throw new Error('mojiColor must be truthy');
                     }
                     // これらは消して良いので消すリストに追加する
-                    this.erasingPuyoInfoList.push(...sequencePuyoInfoList.map((info) => info.puyo));
-                    erasedPuyoColor[puyoColor] = true;
+                    this.erasingMojiInfoList.push(...sequenceMojiInfoList.map((info) => info.moji));
+                    erasedMojiColor[mojiColor] = true;
                 }
             }
         }
 
         // 消さないリストに入っていたぷよをメモリに復帰させる
-        for (const info of existingPuyoInfoList) {
-            this.board[info.y][info.x] = info.puyo;
+        for (const info of existingMojiInfoList) {
+            this.board[info.y][info.x] = info.moji;
         }
 
-        if (this.erasingPuyoInfoList.length) {
+        if (this.erasingMojiInfoList.length) {
             // もし消せるならば、消えるぷよの個数と色の情報をまとめて返す
             return {
-                piece: this.erasingPuyoInfoList.length,
-                color: Object.keys(erasedPuyoColor).length,
+                piece: this.erasingMojiInfoList.length,
+                color: Object.keys(erasedMojiColor).length,
             };
         }
         return null;
@@ -236,19 +236,19 @@ export class Stage {
         const ratio = elapsedFrame / Config.eraseAnimationDuration;
         if (ratio > 1) {
             // アニメーションを終了する
-            this.erasingPuyoInfoList = [];
+            this.erasingMojiInfoList = [];
             return false;
         } else if (ratio > 0.75) {
-            this.erasingPuyoIsHidden = false;
+            this.erasingMojiIsHidden = false;
             return true;
         } else if (ratio > 0.5) {
-            this.erasingPuyoIsHidden = true;
+            this.erasingMojiIsHidden = true;
             return true;
         } else if (ratio > 0.25) {
-            this.erasingPuyoIsHidden = false;
+            this.erasingMojiIsHidden = false;
             return true;
         } else {
-            this.erasingPuyoIsHidden = true;
+            this.erasingMojiIsHidden = true;
             return true;
         }
     }

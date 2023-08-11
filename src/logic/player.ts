@@ -2,9 +2,9 @@ import { Config } from './config';
 import { Stage } from './stage';
 import { Score } from './score';
 import { Input } from './input';
-import { Puyo, PuyoColor, PuyoOnStage } from './puyo';
+import { Moji, MojiColor, MojiOnStage } from './moji';
 
-type PuyoStatus = {
+type MojiStatus = {
     x: number; // 中心ぷよの位置: 左から2列目
     y: number; // 画面上部ギリギリから出てくる
     left: number;
@@ -15,9 +15,9 @@ type PuyoStatus = {
 };
 
 export class Player {
-    private static centerPuyo: Puyo | null;
-    private static movablePuyo: Puyo | null;
-    private static puyoStatus: PuyoStatus;
+    private static centerMoji: Moji | null;
+    private static movableMoji: Moji | null;
+    private static mojiStatus: MojiStatus;
 
     private static groundFrame: number;
 
@@ -29,21 +29,21 @@ export class Player {
     private static rotateFromRotation: number;
 
     //ぷよ設置確認
-    static createNewPuyo() {
+    static createNewMoji() {
         // ぷよぷよが置けるかどうか、1番上の段の左から3つ目を確認する
         if (Stage.board[0][2]) {
             // 空白でない場合は新しいぷよを置けない
             return false;
         }
         // 新しいぷよを作成する
-        this.centerPuyo = generatePuyo();
-        this.movablePuyo = generatePuyo();
+        this.centerMoji = generateMoji();
+        this.movableMoji = generateMoji();
         // ぷよの初期配置を定める
-        this.puyoStatus = {
+        this.mojiStatus = {
             x: 2, // 中心ぷよの位置: 左から2列目
             y: -1, // 画面上部ギリギリから出てくる
-            left: 2 * Config.puyoImgWidth,
-            top: -1 * Config.puyoImgHeight,
+            left: 2 * Config.mojiImgWidth,
+            top: -1 * Config.mojiImgHeight,
             dx: 0, // 動くぷよの相対位置: 動くぷよは上方向にある
             dy: -1,
             rotation: 90, // 動くぷよの角度は90度（上向き）
@@ -53,28 +53,28 @@ export class Player {
         return true;
     }
 
-    static getPlayingPuyos(): PuyoOnStage[] {
-        if (!this.centerPuyo || !this.movablePuyo) {
+    static getPlayingMojis(): MojiOnStage[] {
+        if (!this.centerMoji || !this.movableMoji) {
             return [];
         }
 
         return [
             {
-                ...this.centerPuyo,
+                ...this.centerMoji,
                 position: {
-                    left: this.puyoStatus.left,
-                    top: this.puyoStatus.top,
+                    left: this.mojiStatus.left,
+                    top: this.mojiStatus.top,
                 },
             },
             {
-                ...this.movablePuyo,
+                ...this.movableMoji,
                 position: {
                     left:
-                        this.puyoStatus.left +
-                        Math.cos((this.puyoStatus.rotation * Math.PI) / 180) * Config.puyoImgWidth,
+                        this.mojiStatus.left +
+                        Math.cos((this.mojiStatus.rotation * Math.PI) / 180) * Config.mojiImgWidth,
                     top:
-                        this.puyoStatus.top -
-                        Math.sin((this.puyoStatus.rotation * Math.PI) / 180) * Config.puyoImgHeight,
+                        this.mojiStatus.top -
+                        Math.sin((this.mojiStatus.rotation * Math.PI) / 180) * Config.mojiImgHeight,
                 },
             },
         ];
@@ -83,10 +83,10 @@ export class Player {
     private static falling(isDownPressed: boolean) {
         // 現状の場所の下にブロックがあるかどうか確認する
         let isBlocked = false;
-        const x = this.puyoStatus.x;
-        let y = this.puyoStatus.y;
-        const dx = this.puyoStatus.dx;
-        const dy = this.puyoStatus.dy;
+        const x = this.mojiStatus.x;
+        let y = this.mojiStatus.y;
+        const dx = this.mojiStatus.dx;
+        const dy = this.mojiStatus.dy;
         if (
             y + 1 >= Config.stageRows ||
             Stage.board[y + 1][x] ||
@@ -96,19 +96,19 @@ export class Player {
         }
         if (!isBlocked) {
             // 下にブロックがないなら自由落下してよい。プレイヤー操作中の自由落下処理をする
-            this.puyoStatus.top += Config.playerFallingSpeed;
+            this.mojiStatus.top += Config.playerFallingSpeed;
             if (isDownPressed) {
                 // 下キーが押されているならもっと加速する
-                this.puyoStatus.top += Config.playerDownSpeed;
+                this.mojiStatus.top += Config.playerDownSpeed;
             }
-            if (Math.floor(this.puyoStatus.top / Config.puyoImgHeight) != y) {
+            if (Math.floor(this.mojiStatus.top / Config.mojiImgHeight) != y) {
                 // ブロックの境を超えたので、再チェックする
                 // 下キーが押されていたら、得点を加算する
                 if (isDownPressed) {
                     Score.addDownScore();
                 }
                 y += 1;
-                this.puyoStatus.y = y;
+                this.mojiStatus.y = y;
                 if (
                     y + 1 >= Config.stageRows ||
                     Stage.board[y + 1][x] ||
@@ -122,7 +122,7 @@ export class Player {
                     return;
                 } else {
                     // 境を超えたらブロックにぶつかった。位置を調節して、接地を開始する
-                    this.puyoStatus.top = y * Config.puyoImgHeight;
+                    this.mojiStatus.top = y * Config.mojiImgHeight;
                     this.groundFrame = 1;
                     return;
                 }
@@ -154,10 +154,10 @@ export class Player {
         if (Input.keyStatus.right || Input.keyStatus.left) {
             // 左右の確認をする
             const cx = Input.keyStatus.right ? 1 : -1;
-            const x = this.puyoStatus.x;
-            const y = this.puyoStatus.y;
-            const mx = x + this.puyoStatus.dx;
-            const my = y + this.puyoStatus.dy;
+            const x = this.mojiStatus.x;
+            const y = this.mojiStatus.y;
+            const mx = x + this.mojiStatus.dx;
+            const my = y + this.mojiStatus.dy;
             // その方向にブロックがないことを確認する
             // まずは自分の左右を確認
             let canMove = true;
@@ -188,17 +188,17 @@ export class Player {
             if (canMove) {
                 // 動かすことが出来るので、移動先情報をセットして移動状態にする
                 this.actionStartFrame = frame;
-                this.moveSource = x * Config.puyoImgWidth;
-                this.moveDestination = (x + cx) * Config.puyoImgWidth;
-                this.puyoStatus.x += cx;
+                this.moveSource = x * Config.mojiImgWidth;
+                this.moveDestination = (x + cx) * Config.mojiImgWidth;
+                this.mojiStatus.x += cx;
                 return 'moving';
             }
         } else if (Input.keyStatus.up) {
             // 回転を確認する
             // 回せるかどうかは後で確認。まわすぞ
-            const x = this.puyoStatus.x;
-            const y = this.puyoStatus.y;
-            const rotation = this.puyoStatus.rotation;
+            const x = this.mojiStatus.x;
+            const y = this.mojiStatus.y;
+            const rotation = this.mojiStatus.rotation;
             let canRotate = true;
 
             let cx = 0;
@@ -273,27 +273,27 @@ export class Player {
                 if (cy === -1) {
                     if (this.groundFrame > 0) {
                         // 接地しているなら1段引き上げる
-                        this.puyoStatus.y -= 1;
+                        this.mojiStatus.y -= 1;
                         this.groundFrame = 0;
                     }
-                    this.puyoStatus.top = this.puyoStatus.y * Config.puyoImgHeight;
+                    this.mojiStatus.top = this.mojiStatus.y * Config.mojiImgHeight;
                 }
                 // 回すことが出来るので、回転後の情報をセットして回転状態にする
                 this.actionStartFrame = frame;
-                this.rotateBeforeLeft = x * Config.puyoImgHeight;
-                this.rotateAfterLeft = (x + cx) * Config.puyoImgHeight;
-                this.rotateFromRotation = this.puyoStatus.rotation;
+                this.rotateBeforeLeft = x * Config.mojiImgHeight;
+                this.rotateAfterLeft = (x + cx) * Config.mojiImgHeight;
+                this.rotateFromRotation = this.mojiStatus.rotation;
                 // 次の状態を先に設定しておく
-                this.puyoStatus.x += cx;
-                const distRotation = (this.puyoStatus.rotation + 90) % 360;
-                const dCombi = [
+                this.mojiStatus.x += cx;
+                const distRotation = (this.mojiStatus.rotation + 90) % 360;
+                const dComb = [
                     [1, 0],
                     [0, -1],
                     [-1, 0],
                     [0, 1],
                 ][distRotation / 90];
-                this.puyoStatus.dx = dCombi[0];
-                this.puyoStatus.dy = dCombi[1];
+                this.mojiStatus.dx = dComb[0];
+                this.mojiStatus.dy = dComb[1];
                 return 'rotating';
             }
         }
@@ -304,7 +304,7 @@ export class Player {
         // 移動中も自然落下はさせる
         this.falling(false);
         const ratio = Math.min(1, (frame - this.actionStartFrame) / Config.playerMoveFrame);
-        this.puyoStatus.left = ratio * (this.moveDestination - this.moveSource) + this.moveSource;
+        this.mojiStatus.left = ratio * (this.moveDestination - this.moveSource) + this.moveSource;
         if (ratio === 1) {
             return false;
         }
@@ -315,35 +315,35 @@ export class Player {
         // 回転中も自然落下はさせる
         this.falling(false);
         const ratio = Math.min(1, (frame - this.actionStartFrame) / Config.playerRotateFrame);
-        this.puyoStatus.left = (this.rotateAfterLeft - this.rotateBeforeLeft) * ratio + this.rotateBeforeLeft;
-        this.puyoStatus.rotation = this.rotateFromRotation + ratio * 90;
+        this.mojiStatus.left = (this.rotateAfterLeft - this.rotateBeforeLeft) * ratio + this.rotateBeforeLeft;
+        this.mojiStatus.rotation = this.rotateFromRotation + ratio * 90;
         if (ratio === 1) {
-            this.puyoStatus.rotation = (this.rotateFromRotation + 90) % 360;
+            this.mojiStatus.rotation = (this.rotateFromRotation + 90) % 360;
             return false;
         }
         return true;
     }
 
     static fix() {
-        if (!this.centerPuyo || !this.movablePuyo) {
-            throw new Error('centerPuyo or movablePuyo is null');
+        if (!this.centerMoji || !this.movableMoji) {
+            throw new Error('centerMoji or movableMoji is null');
         }
         // 現在のぷよをステージ上に配置する
-        const x = this.puyoStatus.x;
-        const y = this.puyoStatus.y;
-        const dx = this.puyoStatus.dx;
-        const dy = this.puyoStatus.dy;
+        const x = this.mojiStatus.x;
+        const y = this.mojiStatus.y;
+        const dx = this.mojiStatus.dx;
+        const dy = this.mojiStatus.dy;
         if (y >= 0) {
             // 画面外のぷよは消してしまう
-            Stage.setPuyo(x, y, this.centerPuyo.color, this.centerPuyo.puyoId);
+            Stage.setMoji(x, y, this.centerMoji.color, this.centerMoji.mojiId);
         }
         if (y + dy >= 0) {
             // 画面外のぷよは消してしまう
-            Stage.setPuyo(x + dx, y + dy, this.movablePuyo.color, this.movablePuyo.puyoId);
+            Stage.setMoji(x + dx, y + dy, this.movableMoji.color, this.movableMoji.mojiId);
         }
         // 操作用に作成したぷよ画像を消す
-        this.centerPuyo = null;
-        this.movablePuyo = null;
+        this.centerMoji = null;
+        this.movableMoji = null;
     }
 
     static batankyu() {
@@ -353,20 +353,20 @@ export class Player {
     }
 }
 
-function generatePuyo(): Puyo {
+function generateMoji(): Moji {
     return {
-        puyoId: generatePuyoId(),
-        color: randomPuyoColor(),
+        mojiId: generateMojiId(),
+        color: randomMojiColor(),
     };
 }
 
-let lastPuyoId = 0;
-function generatePuyoId(): number {
-    return ++lastPuyoId;
+let lastMojiId = 0;
+function generateMojiId(): number {
+    return ++lastMojiId;
 }
 
-function randomPuyoColor(): PuyoColor {
+function randomMojiColor(): MojiColor {
     // 新しいぷよの色を決める
-    const puyoColors = Math.max(1, Math.min(5, Config.puyoColors));
-    return (Math.floor(Math.random() * puyoColors) + 1) as PuyoColor;
+    const mojiColors = Math.max(1, Math.min(5, Config.mojiColors));
+    return (Math.floor(Math.random() * mojiColors) + 1) as MojiColor;
 }
