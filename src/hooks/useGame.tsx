@@ -36,9 +36,6 @@ export type Grid = (Moji | null)[][];
 
 const interval = 500;
 
-// FIXME
-const checkGameOver = (grid: Grid) => grid.every((row, i) => i % 2 === 0 || row[2] !== null);
-
 const checkAllMojiHaveFallen = (grid: Grid): boolean => {
     let done = true;
     for (let i = 0; i < 6; i++) {
@@ -83,11 +80,12 @@ const useGame = () => {
     for (const moji of mojiList) {
         grid[moji.position.y][moji.position.x] = moji;
     }
-    const isGameOver = checkGameOver(grid);
+    const [isGameOver, setIsGameOver] = useState(false);
+    // let isGameOver = checkAllMojiHaveFallen(grid) && grid[3][2];
 
     const handleLR = useCallback(
         (e: KeyboardEvent) => {
-            if (checkGameOver(grid)) return;
+            if (isGameOver) return;
             if (!checkControllable(grid)) return;
             switch (e.key) {
                 case 'ArrowRight': {
@@ -103,67 +101,45 @@ const useGame = () => {
                 }
             }
         },
-        [dispatch, grid]
+        [dispatch, grid, isGameOver]
     );
 
     const handleDown = useCallback(
         (e: KeyboardEvent) => {
-            if (checkGameOver(grid)) return;
+            if (isGameOver) return;
             if (!checkControllable(grid)) return;
             if (e.key === 'ArrowDown') {
                 dispatch({ type: 'moveDown' });
             }
         },
-        [dispatch, grid]
+        [dispatch, grid, isGameOver]
     );
 
     const handleTurnRight = useCallback(
         (e: KeyboardEvent) => {
-            if (checkGameOver(grid)) return;
+            if (isGameOver) return;
             if (!checkControllable(grid)) return;
             if (e.repeat) return;
             if (e.key === 'ArrowUp' || e.key === 'x') {
                 dispatch({ type: 'turnRight' });
             }
         },
-        [dispatch, grid]
+        [dispatch, grid, isGameOver]
     );
 
     const handleTurnLeft = useCallback(
         (e: KeyboardEvent) => {
-            if (checkGameOver(grid)) return;
+            if (isGameOver) return;
             if (!checkControllable(grid)) return;
             if (e.repeat) return;
             if (e.key === 'z') {
                 dispatch({ type: 'turnLeft' });
             }
         },
-        [dispatch, grid]
+        [dispatch, grid, isGameOver]
     );
 
     const loop = useCallback(async () => {
-        const appearMoji = () => {
-            const charList = [...'ウイシクツヨキリカ'];
-            dispatch({
-                type: 'add',
-                payload: {
-                    position: { y: 1, x: 2 },
-                    char: charList[Math.floor(Math.random() * charList.length)],
-                    axis: false,
-                    id: crypto.randomUUID(),
-                },
-            });
-            dispatch({
-                type: 'add',
-                payload: {
-                    position: { y: 3, x: 2 },
-                    char: charList[Math.floor(Math.random() * charList.length)],
-                    axis: true,
-                    id: crypto.randomUUID(),
-                },
-            });
-        };
-
         if (!checkControllable(grid)) {
             dispatch({ type: 'fix' });
         }
@@ -184,7 +160,10 @@ const useGame = () => {
             }
             dispatch({ type: 'delete', payload: { idList: allIdList } });
             setDeletedId([]);
-            if (wordsAndLines.length === 0) appearMoji();
+            if (wordsAndLines.length === 0) {
+                dispatch({ type: 'generate' });
+                setIsGameOver(checkAllMojiHaveFallen(grid) && grid[3][2] !== null);
+            }
         }
         dispatch({ type: 'fall' });
     }, [dispatch, grid]);

@@ -19,15 +19,7 @@ export type Action =
     | { type: 'moveLeft' }
     | { type: 'turnRight' }
     | { type: 'turnLeft' }
-    | {
-          type: 'add';
-          payload: {
-              position: Position;
-              char: string;
-              axis: boolean;
-              id: Id;
-          };
-      }
+    | { type: 'generate' }
     | { type: 'delete'; payload: { idList: Id[] } }
     | { type: 'fix' };
 
@@ -435,17 +427,27 @@ const reducer: Reducer<Moji[], Action> = (prev: Moji[], action: Action): Moji[] 
                 }
             }
         }
-        case 'add': {
-            return [
-                ...prev,
-                {
-                    position: action.payload.position,
-                    char: action.payload.char,
-                    controllable: true,
-                    axis: action.payload.axis,
-                    id: action.payload.id,
-                },
-            ];
+        case 'generate': {
+            if (prev.some((moji) => moji.position.x === 2 && moji.position.y === 3 && !moji.controllable))
+                return [...prev];
+
+            const charList = [...'ウイシクツヨキリカ'];
+            const axis: Moji = {
+                position: { y: 2, x: 2 },
+                char: charList[Math.floor(Math.random() * charList.length)],
+                axis: true,
+                id: crypto.randomUUID(),
+                controllable: true,
+            };
+            const child: Moji = {
+                position: { y: 0, x: 2 },
+                char: charList[Math.floor(Math.random() * charList.length)],
+                axis: false,
+                id: crypto.randomUUID(),
+                controllable: true,
+            };
+
+            return [...prev, axis, child];
         }
         case 'delete': {
             return prev.filter((moji) => !action.payload.idList.includes(moji.id));
