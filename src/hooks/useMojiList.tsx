@@ -11,9 +11,8 @@ export type Moji = {
 };
 type ChildRelativePosition = 'top' | 'right' | 'bottom' | 'left';
 export type Action =
-    | {
-          type: 'fall';
-      }
+    | { type: 'fall' }
+    | { type: 'drop' }
     | { type: 'moveDown' }
     | { type: 'moveRight' }
     | { type: 'moveLeft' }
@@ -260,6 +259,27 @@ const reducer: Reducer<Moji[], Action> = (prev: Moji[], action: Action): Moji[] 
                     .findIndex((v) => v.position.y === moji.position.y + 2 && v.position.x === moji.position.x);
                 if (index !== -1) continue;
                 sorted[i].position.y++;
+            }
+            return sorted;
+        }
+        case 'drop': {
+            const sorted = [...prev].sort((a, b) => b.position.y - a.position.y);
+            for (let i = 0; i < prev.length; i++) {
+                const moji = sorted[i];
+                if (moji.position.y === 25) continue;
+                const piled = sorted
+                    .slice(0, i)
+                    .find(
+                        (v) =>
+                            (v.position.y === moji.position.y + 2 || v.position.y === moji.position.y + 3) &&
+                            v.position.x === moji.position.x
+                    );
+                if (!piled) {
+                    sorted[i].position.y += 2;
+                    continue;
+                }
+                if (piled.position.y - moji.position.y === 2) continue;
+                if (piled.position.y - moji.position.y === 3) sorted[i].position.y += 1;
             }
             return sorted;
         }

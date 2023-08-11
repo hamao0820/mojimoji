@@ -139,8 +139,9 @@ const useGame = () => {
         [dispatch, grid, isGameOver]
     );
 
-    const loop = useCallback(async () => {
-        if (!checkControllable(grid)) {
+    const step = useCallback(async () => {
+        const isControllable = checkControllable(grid);
+        if (!isControllable) {
             dispatch({ type: 'fix' });
         }
         if (checkAllMojiHaveFallen(grid)) {
@@ -164,8 +165,10 @@ const useGame = () => {
                 dispatch({ type: 'generate' });
                 setIsGameOver(checkAllMojiHaveFallen(grid) && grid[3][2] !== null);
             }
+            dispatch({ type: 'fall' });
+            return;
         }
-        dispatch({ type: 'fall' });
+        isControllable ? dispatch({ type: 'fall' }) : dispatch({ type: 'drop' });
     }, [dispatch, grid]);
 
     useEffect(() => {
@@ -176,9 +179,9 @@ const useGame = () => {
         const now = Date.now();
         const nextTime = now + interval - ((now - initialTime) % interval);
         const diff = nextTime - now;
-        const timeId = setInterval(loop, diff);
+        const timeId = setInterval(step, diff);
         return () => clearInterval(timeId);
-    }, [initialTime, loop, isGameOver]);
+    }, [initialTime, step, isGameOver]);
 
     useEffect(() => {
         document.addEventListener('keydown', handleLR);
