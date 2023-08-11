@@ -1,129 +1,99 @@
-import { Grid } from '../hooks/useGame';
 import data from '../../public/top11.json';
+import { Config } from '../logic/config';
+import { MojiOnStage } from '../logic/moji';
 
-export type Position = {
-    x: 0 | 1 | 2 | 3 | 4 | 5;
-    y:
-        | 0
-        | 1
-        | 2
-        | 3
-        | 4
-        | 5
-        | 6
-        | 7
-        | 8
-        | 9
-        | 10
-        | 11
-        | 12
-        | 13
-        | 14
-        | 15
-        | 16
-        | 17
-        | 18
-        | 19
-        | 20
-        | 21
-        | 22
-        | 23
-        | 24
-        | 25;
-};
-
+type Position = { x: number; y: number };
 const checkPositionList: Position[][] = [];
 
-for (let i = 0; i <= 5; i++) {
-    for (let j = 3; j <= 25; j++) {
-        if (j % 2 === 0) continue;
-        if (i <= 3) {
+for (let y = 0; y < Config.stageRows; y++) {
+    for (let x = 0; x < Config.stageCols; x++) {
+        if (x <= 3) {
             checkPositionList.push([
-                { x: i, y: j },
-                { x: i + 1, y: j },
-                { x: i + 2, y: j },
-            ] as Position[]);
+                { x: x, y: y },
+                { x: x + 1, y: y },
+                { x: x + 2, y: y },
+            ]);
         }
-        if (i <= 2) {
+        if (x <= 2) {
             checkPositionList.push([
-                { x: i, y: j },
-                { x: i + 1, y: j },
-                { x: i + 2, y: j },
-                { x: i + 3, y: j },
-            ] as Position[]);
+                { x: x, y: y },
+                { x: x + 1, y: y },
+                { x: x + 2, y: y },
+                { x: x + 3, y: y },
+            ]);
         }
-        if (i <= 1) {
+        if (x <= 1) {
             checkPositionList.push([
-                { x: i, y: j },
-                { x: i + 1, y: j },
-                { x: i + 2, y: j },
-                { x: i + 3, y: j },
-                { x: i + 4, y: j },
-            ] as Position[]);
+                { x: x, y: y },
+                { x: x + 1, y: y },
+                { x: x + 2, y: y },
+                { x: x + 3, y: y },
+                { x: x + 4, y: y },
+            ]);
         }
-        if (i === 0) {
+        if (x === 0) {
             checkPositionList.push([
-                { x: i, y: j },
-                { x: i + 1, y: j },
-                { x: i + 2, y: j },
-                { x: i + 3, y: j },
-                { x: i + 4, y: j },
-                { x: i + 5, y: j },
-            ] as Position[]);
+                { x: x, y: y },
+                { x: x + 1, y: y },
+                { x: x + 2, y: y },
+                { x: x + 3, y: y },
+                { x: x + 4, y: y },
+                { x: x + 5, y: y },
+            ]);
         }
-        if (j <= 21) {
+        if (y <= 9) {
             checkPositionList.push([
-                { x: i, y: j },
-                { x: i, y: j + 2 },
-                { x: i, y: j + 4 },
-            ] as Position[]);
+                { x: x, y: y },
+                { x: x, y: y + 1 },
+                { x: x, y: y + 2 },
+            ]);
         }
-        if (j <= 19) {
+        if (y <= 8) {
             checkPositionList.push([
-                { x: i, y: j },
-                { x: i, y: j + 2 },
-                { x: i, y: j + 4 },
-                { x: i, y: j + 6 },
-            ] as Position[]);
+                { x: x, y: y },
+                { x: x, y: y + 1 },
+                { x: x, y: y + 2 },
+                { x: x, y: y + 3 },
+            ]);
         }
-        if (j <= 17) {
+        if (y <= 7) {
             checkPositionList.push([
-                { x: i, y: j },
-                { x: i, y: j + 2 },
-                { x: i, y: j + 4 },
-                { x: i, y: j + 6 },
-                { x: i, y: j + 8 },
-            ] as Position[]);
+                { x: x, y: y },
+                { x: x, y: y + 1 },
+                { x: x, y: y + 2 },
+                { x: x, y: y + 3 },
+                { x: x, y: y + 4 },
+            ]);
         }
-        if (j <= 15) {
+        if (y <= 6) {
             checkPositionList.push([
-                { x: i, y: j },
-                { x: i, y: j + 2 },
-                { x: i, y: j + 4 },
-                { x: i, y: j + 6 },
-                { x: i, y: j + 8 },
-                { x: i, y: j + 10 },
-            ] as Position[]);
+                { x: x, y: y },
+                { x: x, y: y + 1 },
+                { x: x, y: y + 2 },
+                { x: x, y: y + 3 },
+                { x: x, y: y + 4 },
+                { x: x, y: y + 5 },
+            ]);
         }
     }
 }
 
 const correctWords = data.data;
 
-export const getLineJoinedWord = (grid: Grid, line: Position[]): string => {
+export const getLineJoinedWord = (board: (null | MojiOnStage)[][], line: Position[]): string => {
     let word = '';
     for (const pos of line) {
-        const moji = grid[pos.y][pos.x];
+        const moji = board[pos.y][pos.x];
         if (!moji) return '';
         word += moji.char;
     }
     return word;
 };
 
-export const getAllJoinedWordsAndLine = (grid: Grid): [string, Position[]][] =>
+export const getAllJoinedWordsAndLine = (board: (null | MojiOnStage)[][]): [string, Position[]][] =>
     checkPositionList
-        .map<[string, Position[]]>((line) => [getLineJoinedWord(grid, line), line])
+        .map<[string, Position[]]>((line) => [getLineJoinedWord(board, line), line])
         .filter(([word]) => word !== '');
 
-export const getCorrectWordsAndLines = (grid: Grid): [string, Position[]][] =>
-    getAllJoinedWordsAndLine(grid).filter(([word]) => correctWords.includes(word));
+export const getCorrectWordsAndLines = (board: (null | MojiOnStage)[][]): [string, Position[]][] =>
+    getAllJoinedWordsAndLine(board).filter(([word]) => correctWords.includes(word));

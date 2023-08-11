@@ -1,3 +1,4 @@
+import { getCorrectWordsAndLines } from '../utility/judgeWord';
 import { Config } from './config';
 import { MojiOnStage, MojiChar, MojiPosition } from './moji';
 
@@ -5,12 +6,6 @@ type FallingMoji = {
     position: MojiPosition;
     destinationTop: number;
     falling: boolean;
-};
-
-type MojiInfo = {
-    x: number;
-    y: number;
-    moji: MojiOnStage;
 };
 
 type ZenkeshiAnimationState = {
@@ -147,89 +142,29 @@ export class Stage {
         this.eraseStartFrame = startFrame;
         this.erasingMojiInfoList.length = 0;
 
-        // 何色のもじを消したかを記録する
-        const erasedMojiColor: Partial<Record<MojiChar, boolean>> = {};
+        // どのような単語を消したかを記録する
+        const erasedMojiWord: string[] = [];
 
-        // 隣接もじを確認する関数内関数を作成
-        const sequenceMojiInfoList: MojiInfo[] = [];
-        const existingMojiInfoList: MojiInfo[] = [];
-        const checkSequentialMoji = (x: number, y: number) => {
-            // もじがあるか確認する
-            const origMoji = this.board[y][x];
-            if (!origMoji) {
-                // ないなら何もしない
-                return;
-            }
-            // あるなら一旦退避して、メモリ上から消す
-            sequenceMojiInfoList.push({
-                x: x,
-                y: y,
-                moji: origMoji,
+        const wordsAndLines = getCorrectWordsAndLines(this.board);
+        for (const [word, line] of wordsAndLines) {
+            erasedMojiWord.push(word);
+            line.forEach((pos) => {
+                this.board[pos.y][pos.x] && this.erasingMojiInfoList.push(this.board[pos.y][pos.x]!);
+                this.board[pos.y][pos.x] = null;
             });
-            this.board[y][x] = null;
-
-            // 四方向の周囲もじを確認する
-            const direction = [
-                [0, 1],
-                [1, 0],
-                [0, -1],
-                [-1, 0],
-            ];
-            for (let i = 0; i < direction.length; i++) {
-                const dx = x + direction[i][0];
-                const dy = y + direction[i][1];
-                if (dx < 0 || dy < 0 || dx >= Config.stageCols || dy >= Config.stageRows) {
-                    // ステージの外にはみ出た
-                    continue;
-                }
-                const cell = this.board[dy][dx];
-                if (!cell || cell.char !== origMoji.char) {
-                    // もじの色が違う
-                    continue;
-                }
-                // そのもじのまわりのもじも消せるか確認する
-                checkSequentialMoji(dx, dy);
-            }
-        };
-
-        // 実際に削除できるかの確認を行う
-        for (let y = 0; y < Config.stageRows; y++) {
-            for (let x = 0; x < Config.stageCols; x++) {
-                sequenceMojiInfoList.length = 0;
-                const mojiColor = this.board[y][x]?.char;
-                checkSequentialMoji(x, y);
-                if (sequenceMojiInfoList.length == 0 || sequenceMojiInfoList.length < Config.eraseMojiCount) {
-                    // 連続して並んでいる数が足りなかったので消さない
-                    if (sequenceMojiInfoList.length) {
-                        // 退避していたもじを消さないリストに追加する
-                        existingMojiInfoList.push(...sequenceMojiInfoList);
-                    }
-                } else {
-                    if (!mojiColor) {
-                        throw new Error('mojiColor must be truthy');
-                    }
-                    // これらは消して良いので消すリストに追加する
-                    this.erasingMojiInfoList.push(...sequenceMojiInfoList.map((info) => info.moji));
-                    erasedMojiColor[mojiColor] = true;
-                }
-            }
-        }
-
-        // 消さないリストに入っていたもじをメモリに復帰させる
-        for (const info of existingMojiInfoList) {
-            this.board[info.y][info.x] = info.moji;
         }
 
         if (this.erasingMojiInfoList.length) {
-            // もし消せるならば、消えるもじの個数と色の情報をまとめて返す
+            // もし消せるならば、消えるもじの個数と文字の長さの情報をまとめて返す
             return {
                 piece: this.erasingMojiInfoList.length,
-                color: Object.keys(erasedMojiColor).length,
+                longestWordLength: erasedMojiWord.reduce((prev, word) => Math.max(prev, word.length), 0),
             };
         }
         return null;
     }
 
+    // TODO: ひとつずつ消すアニメーションをする
     // 消すアニメーションをする
     static erasing(frame: number) {
         const elapsedFrame = frame - this.eraseStartFrame;

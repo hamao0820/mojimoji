@@ -29,6 +29,7 @@ export const Game: React.VFC = () => {
                 cancelAnimationFrame(reqIdRef.current);
             }
         };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     // console.log(frame)

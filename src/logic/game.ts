@@ -64,7 +64,7 @@ export const tick = (frame: number): number => {
                 mode = 'erasing';
                 combinationCount++;
                 // 得点を計算する
-                Score.addErasingScore(combinationCount, eraseInfo.piece, eraseInfo.color);
+                Score.addErasingScore(combinationCount, eraseInfo.piece, eraseInfo.longestWordLength);
                 Stage.hideZenkeshi(frame);
             } else {
                 if (Stage.getFixedMojis().length === 0 && combinationCount > 0) {
