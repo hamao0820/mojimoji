@@ -1,5 +1,5 @@
 import { Config } from './config';
-import { MojiOnStage, MojiColor, MojiPosition } from './moji';
+import { MojiOnStage, MojiChar, MojiPosition } from './moji';
 
 type FallingMoji = {
     position: MojiPosition;
@@ -71,11 +71,11 @@ export class Stage {
     }
 
     // メモリに moji をセットする
-    static setMoji(x: number, y: number, moji: MojiColor, mojiId: number) {
+    static setMoji(x: number, y: number, char: MojiChar, mojiId: number) {
         // メモリにセットする
         this.board[y][x] = {
             mojiId,
-            color: moji,
+            char: char,
             position: {
                 left: x * Config.mojiImgWidth,
                 top: y * Config.mojiImgHeight,
@@ -93,11 +93,11 @@ export class Stage {
             for (let x = 0; x < line.length; x++) {
                 const cell = this.board[y][x];
                 if (!cell) {
-                    // このマスにぷよがなければ次
+                    // このマスにもじがなければ次
                     continue;
                 }
                 if (!this.board[y + 1][x]) {
-                    // このぷよは落ちるので、取り除く
+                    // このもじは落ちるので、取り除く
                     this.board[y][x] = null;
                     let dst = y;
                     while (dst + 1 < Config.stageRows && this.board[dst + 1][x] == null) {
@@ -133,10 +133,10 @@ export class Stage {
                 top = fallingMoji.destinationTop;
                 fallingMoji.falling = false;
             } else {
-                // まだ落下しているぷよがあることを記録する
+                // まだ落下しているもじがあることを記録する
                 isFalling = true;
             }
-            // ぷよを動かす
+            // もじを動かす
             fallingMoji.position.top = top;
         }
         return isFalling;
@@ -147,14 +147,14 @@ export class Stage {
         this.eraseStartFrame = startFrame;
         this.erasingMojiInfoList.length = 0;
 
-        // 何色のぷよを消したかを記録する
-        const erasedMojiColor: Partial<Record<MojiColor, boolean>> = {};
+        // 何色のもじを消したかを記録する
+        const erasedMojiColor: Partial<Record<MojiChar, boolean>> = {};
 
-        // 隣接ぷよを確認する関数内関数を作成
+        // 隣接もじを確認する関数内関数を作成
         const sequenceMojiInfoList: MojiInfo[] = [];
         const existingMojiInfoList: MojiInfo[] = [];
         const checkSequentialMoji = (x: number, y: number) => {
-            // ぷよがあるか確認する
+            // もじがあるか確認する
             const origMoji = this.board[y][x];
             if (!origMoji) {
                 // ないなら何もしない
@@ -168,7 +168,7 @@ export class Stage {
             });
             this.board[y][x] = null;
 
-            // 四方向の周囲ぷよを確認する
+            // 四方向の周囲もじを確認する
             const direction = [
                 [0, 1],
                 [1, 0],
@@ -183,11 +183,11 @@ export class Stage {
                     continue;
                 }
                 const cell = this.board[dy][dx];
-                if (!cell || cell.color !== origMoji.color) {
-                    // ぷよの色が違う
+                if (!cell || cell.char !== origMoji.char) {
+                    // もじの色が違う
                     continue;
                 }
-                // そのぷよのまわりのぷよも消せるか確認する
+                // そのもじのまわりのもじも消せるか確認する
                 checkSequentialMoji(dx, dy);
             }
         };
@@ -196,12 +196,12 @@ export class Stage {
         for (let y = 0; y < Config.stageRows; y++) {
             for (let x = 0; x < Config.stageCols; x++) {
                 sequenceMojiInfoList.length = 0;
-                const mojiColor = this.board[y][x]?.color;
+                const mojiColor = this.board[y][x]?.char;
                 checkSequentialMoji(x, y);
                 if (sequenceMojiInfoList.length == 0 || sequenceMojiInfoList.length < Config.eraseMojiCount) {
                     // 連続して並んでいる数が足りなかったので消さない
                     if (sequenceMojiInfoList.length) {
-                        // 退避していたぷよを消さないリストに追加する
+                        // 退避していたもじを消さないリストに追加する
                         existingMojiInfoList.push(...sequenceMojiInfoList);
                     }
                 } else {
@@ -215,13 +215,13 @@ export class Stage {
             }
         }
 
-        // 消さないリストに入っていたぷよをメモリに復帰させる
+        // 消さないリストに入っていたもじをメモリに復帰させる
         for (const info of existingMojiInfoList) {
             this.board[info.y][info.x] = info.moji;
         }
 
         if (this.erasingMojiInfoList.length) {
-            // もし消せるならば、消えるぷよの個数と色の情報をまとめて返す
+            // もし消せるならば、消えるもじの個数と色の情報をまとめて返す
             return {
                 piece: this.erasingMojiInfoList.length,
                 color: Object.keys(erasedMojiColor).length,

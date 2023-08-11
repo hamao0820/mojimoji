@@ -1,8 +1,8 @@
-export type MojiColor = 1 | 2 | 3 | 4 | 5;
+export type MojiChar = 'ウ' | 'イ' | 'シ' | 'ク' | 'ツ' | 'ヨ' | 'キ' | 'リ' | 'カ';
 
 export type Moji = {
     mojiId: number;
-    color: MojiColor;
+    char: MojiChar;
 };
 
 export type MojiPosition = {
@@ -14,3 +14,5 @@ export type MojiOnStage = Moji & {
     position: MojiPosition;
     hidden?: boolean;
 };
+
+export const mojiChars: MojiChar[] = ['ウ', 'イ', 'シ', 'ク', 'ツ', 'ヨ', 'キ', 'リ', 'カ'];

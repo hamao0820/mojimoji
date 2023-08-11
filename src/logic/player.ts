@@ -2,16 +2,16 @@ import { Config } from './config';
 import { Stage } from './stage';
 import { Score } from './score';
 import { Input } from './input';
-import { Moji, MojiColor, MojiOnStage } from './moji';
+import { Moji, MojiChar, mojiChars, MojiOnStage } from './moji';
 
 type MojiStatus = {
-    x: number; // 中心ぷよの位置: 左から2列目
+    x: number; // 中心もじの位置: 左から2列目
     y: number; // 画面上部ギリギリから出てくる
     left: number;
     top: number;
-    dx: number; // 動くぷよの相対位置: 動くぷよは上方向にある
+    dx: number; // 動くもじの相対位置: 動くもじは上方向にある
     dy: number;
-    rotation: number; // 動くぷよの角度は90度（上向き）
+    rotation: number; // 動くもじの角度は90度（上向き）
 };
 
 export class Player {
@@ -28,25 +28,25 @@ export class Player {
     private static rotateAfterLeft: number;
     private static rotateFromRotation: number;
 
-    //ぷよ設置確認
+    //もじ設置確認
     static createNewMoji() {
-        // ぷよぷよが置けるかどうか、1番上の段の左から3つ目を確認する
+        // もじもじが置けるかどうか、1番上の段の左から3つ目を確認する
         if (Stage.board[0][2]) {
-            // 空白でない場合は新しいぷよを置けない
+            // 空白でない場合は新しいもじを置けない
             return false;
         }
-        // 新しいぷよを作成する
+        // 新しいもじを作成する
         this.centerMoji = generateMoji();
         this.movableMoji = generateMoji();
-        // ぷよの初期配置を定める
+        // もじの初期配置を定める
         this.mojiStatus = {
-            x: 2, // 中心ぷよの位置: 左から2列目
+            x: 2, // 中心もじの位置: 左から2列目
             y: -1, // 画面上部ギリギリから出てくる
             left: 2 * Config.mojiImgWidth,
             top: -1 * Config.mojiImgHeight,
-            dx: 0, // 動くぷよの相対位置: 動くぷよは上方向にある
+            dx: 0, // 動くもじの相対位置: 動くもじは上方向にある
             dy: -1,
-            rotation: 90, // 動くぷよの角度は90度（上向き）
+            rotation: 90, // 動くもじの角度は90度（上向き）
         };
         // 接地時間はゼロ
         this.groundFrame = 0;
@@ -148,7 +148,7 @@ export class Player {
         // まず自由落下を確認する
         // 下キーが押されていた場合、それ込みで自由落下させる
         if (this.falling(Input.keyStatus.down)) {
-            // 落下が終わっていたら、ぷよを固定する
+            // 落下が終わっていたら、もじを固定する
             return 'fix';
         }
         if (Input.keyStatus.right || Input.keyStatus.left) {
@@ -328,20 +328,20 @@ export class Player {
         if (!this.centerMoji || !this.movableMoji) {
             throw new Error('centerMoji or movableMoji is null');
         }
-        // 現在のぷよをステージ上に配置する
+        // 現在のもじをステージ上に配置する
         const x = this.mojiStatus.x;
         const y = this.mojiStatus.y;
         const dx = this.mojiStatus.dx;
         const dy = this.mojiStatus.dy;
         if (y >= 0) {
-            // 画面外のぷよは消してしまう
-            Stage.setMoji(x, y, this.centerMoji.color, this.centerMoji.mojiId);
+            // 画面外のもじは消してしまう
+            Stage.setMoji(x, y, this.centerMoji.char, this.centerMoji.mojiId);
         }
         if (y + dy >= 0) {
-            // 画面外のぷよは消してしまう
-            Stage.setMoji(x + dx, y + dy, this.movableMoji.color, this.movableMoji.mojiId);
+            // 画面外のもじは消してしまう
+            Stage.setMoji(x + dx, y + dy, this.movableMoji.char, this.movableMoji.mojiId);
         }
-        // 操作用に作成したぷよ画像を消す
+        // 操作用に作成したもじ画像を消す
         this.centerMoji = null;
         this.movableMoji = null;
     }
@@ -353,20 +353,19 @@ export class Player {
     }
 }
 
-function generateMoji(): Moji {
+const generateMoji = (): Moji => {
     return {
         mojiId: generateMojiId(),
-        color: randomMojiColor(),
+        char: randomMojiChar(),
     };
-}
+};
 
 let lastMojiId = 0;
-function generateMojiId(): number {
+const generateMojiId = (): number => {
     return ++lastMojiId;
-}
+};
 
-function randomMojiColor(): MojiColor {
-    // 新しいぷよの色を決める
-    const mojiColors = Math.max(1, Math.min(5, Config.mojiColors));
-    return (Math.floor(Math.random() * mojiColors) + 1) as MojiColor;
-}
+const randomMojiChar = (): MojiChar => {
+    // 新しいもじの色を決める;
+    return mojiChars[Math.floor(Math.random() * mojiChars.length)];
+};

@@ -22,7 +22,7 @@ let mode: GameMode; // ゲームの現在の状況
 let combinationCount = 0; // 何連鎖かどうか
 let gameOverFrame: number; // ゲームオーバーになったフレーム
 
-export function initialize(): number {
+export const initialize = (): number => {
     // ステージを準備する
     Stage.initialize();
     // ユーザー操作の準備をする
@@ -31,12 +31,12 @@ export function initialize(): number {
     Score.initialize();
     mode = 'start';
     return 0;
-}
+};
 
-export function tick(frame: number): number {
+export const tick = (frame: number): number => {
     switch (mode) {
         case 'start': {
-            // 最初は、もしかしたら空中にあるかもしれないぷよを自由落下させるところからスタート
+            // 最初は、もしかしたら空中にあるかもしれないもじを自由落下させるところからスタート
             mode = 'checkFall';
             break;
         }
@@ -45,14 +45,14 @@ export function tick(frame: number): number {
             if (Stage.checkFall()) {
                 mode = 'fall';
             } else {
-                // 落ちないならば、ぷよを消せるかどうか判定する
+                // 落ちないならば、もじを消せるかどうか判定する
                 mode = 'checkErase';
             }
             break;
         }
         case 'fall': {
             if (!Stage.fall()) {
-                // すべて落ちきったら、ぷよを消せるかどうか判定する
+                // すべて落ちきったら、もじを消せるかどうか判定する
                 mode = 'checkErase';
             }
             break;
@@ -73,7 +73,7 @@ export function tick(frame: number): number {
                     Score.addZenkeshiScore();
                 }
                 combinationCount = 0;
-                // 消せなかったら、新しいぷよを登場させる
+                // 消せなかったら、新しいもじを登場させる
                 mode = 'newMoji';
             }
             break;
@@ -87,7 +87,7 @@ export function tick(frame: number): number {
         }
         case 'newMoji': {
             if (!Player.createNewMoji()) {
-                // 新しい操作用ぷよを作成出来なかったら、ゲームオーバー
+                // 新しい操作用もじを作成出来なかったら、ゲームオーバー
                 mode = 'gameOver';
             } else {
                 // プレイヤーが操作可能
@@ -116,7 +116,7 @@ export function tick(frame: number): number {
             break;
         }
         case 'fix': {
-            // 現在の位置でぷよを固定する
+            // 現在の位置でもじを固定する
             Player.fix();
             // 固定したら、まず自由落下を確認する
             mode = 'checkFall';
@@ -135,12 +135,12 @@ export function tick(frame: number): number {
     }
 
     return frame + 1;
-}
+};
 
-export function getBatankyuAnimationRatio(frame: number): number | null {
+export const getBatankyuAnimationRatio = (frame: number): number | null => {
     if (mode !== 'batankyu') {
         return null;
     }
 
     return (frame - gameOverFrame) / Config.gameOverFrame;
-}
+};
