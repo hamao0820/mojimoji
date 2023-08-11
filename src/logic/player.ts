@@ -83,10 +83,10 @@ export class Player {
     private static falling(isDownPressed: boolean) {
         // 現状の場所の下にブロックがあるかどうか確認する
         let isBlocked = false;
-        let x = this.puyoStatus.x;
+        const x = this.puyoStatus.x;
         let y = this.puyoStatus.y;
-        let dx = this.puyoStatus.dx;
-        let dy = this.puyoStatus.dy;
+        const dx = this.puyoStatus.dx;
+        const dy = this.puyoStatus.dy;
         if (
             y + 1 >= Config.stageRows ||
             Stage.board[y + 1][x] ||

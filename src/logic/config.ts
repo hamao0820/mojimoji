@@ -1,4 +1,4 @@
-import { PuyoColor } from './puyo';
+import { PuyoColor } from "./puyo";
 
 export const Config = {
     fontHeight: 33,
@@ -9,8 +9,8 @@ export const Config = {
     puyoImgWidth: 40, // ぷよぷよ画像の幅
     puyoImgHeight: 40, // ぷよぷよ画像の高さ
 
-    stageBackgroundColor: '#ffffff', // ステージの背景色
-    scoreBackgroundColor: '#24c0bb', // スコアの背景色
+    stageBackgroundColor: "#ffffff", // ステージの背景色
+    scoreBackgroundColor: "#24c0bb", // スコアの背景色
 
     freeFallingSpeed: 16, // 自由落下のスピード
     erasePuyoCount: 4, // 何個以上揃ったら消えるか
@@ -29,5 +29,6 @@ export const Config = {
 
 // フィールドサイズ追加
 // 高さが全部入るように調整
-Config.puyoImgHeight = (window.innerHeight - Config.fontHeight) / Config.stageRows;
+Config.puyoImgHeight =
+    (window.innerHeight - Config.fontHeight) / Config.stageRows;
 Config.puyoImgWidth = Config.puyoImgHeight;

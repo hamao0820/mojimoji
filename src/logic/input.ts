@@ -27,20 +27,20 @@ export class Input {
         // ブラウザのキーボードの入力を取得するイベントリスナを登録する
         window.document.addEventListener('keydown', (e: KeyboardEvent) => {
             // キーボードが押された場合
-            switch (e.keyCode) {
-                case 37: // 左向きキー
+            switch (e.key) {
+                case 'ArrowLeft': // 左向きキー
                     this.keyStatus.left = true;
                     e.preventDefault();
                     return false;
-                case 38: // 上向きキー
+                case 'ArrowUp': // 上向きキー
                     this.keyStatus.up = true;
                     e.preventDefault();
                     return false;
-                case 39: // 右向きキー
+                case 'ArrowRight': // 右向きキー
                     this.keyStatus.right = true;
                     e.preventDefault();
                     return false;
-                case 40: // 下向きキー
+                case 'ArrowDown': // 下向きキー
                     this.keyStatus.down = true;
                     e.preventDefault();
                     return false;
@@ -48,20 +48,20 @@ export class Input {
         });
         document.addEventListener('keyup', (e: KeyboardEvent) => {
             // キーボードが離された場合
-            switch (e.keyCode) {
-                case 37: // 左向きキー
+            switch (e.key) {
+                case 'ArrowLeft': // 左向きキー
                     this.keyStatus.left = false;
                     e.preventDefault();
                     return false;
-                case 38: // 上向きキー
+                case 'ArrowUp': // 上向きキー
                     this.keyStatus.up = false;
                     e.preventDefault();
                     return false;
-                case 39: // 右向きキー
+                case 'ArrowRight': // 右向きキー
                     this.keyStatus.right = false;
                     e.preventDefault();
                     return false;
-                case 40: // 下向きキー
+                case 'ArrowDown': // 下向きキー
                     this.keyStatus.down = false;
                     e.preventDefault();
                     return false;
@@ -96,7 +96,7 @@ export class Input {
             this.touchPoint.xs = this.touchPoint.xe;
             this.touchPoint.ys = this.touchPoint.ye;
         });
-        document.addEventListener('touchend', (e) => {
+        document.addEventListener('touchend', () => {
             this.keyStatus.up = false;
             this.keyStatus.down = false;
             this.keyStatus.left = false;
