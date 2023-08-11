@@ -79,7 +79,11 @@ const useGame = () => {
     const [started, setStarted] = useState(false);
 
     for (const moji of mojiList) {
-        grid[moji.position.y][moji.position.x] = moji;
+        try {
+            grid[moji.position.y][moji.position.x] = moji;
+        } catch {
+            continue;
+        }
     }
     const [isGameOver, setIsGameOver] = useState(false);
     // let isGameOver = checkAllMojiHaveFallen(grid) && grid[3][2];
@@ -207,7 +211,7 @@ const useGame = () => {
         document.addEventListener('keydown', handleTurnLeft);
         return () => document.removeEventListener('keydown', handleTurnLeft);
     }, [handleTurnLeft]);
-    return { grid, mojiList, deletedId };
+    return { grid, mojiList, deletedId, start };
 };
 
 export default useGame;

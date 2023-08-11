@@ -250,38 +250,35 @@ const canTurnRightToTop = (controllableList: Moji[], mojiList: Moji[]): boolean 
 const reducer: Reducer<Moji[], Action> = (prev: Moji[], action: Action): Moji[] => {
     switch (action.type) {
         case 'fall': {
-            const sorted = [...prev].sort((a, b) => b.position.y - a.position.y);
-            for (let i = 0; i < prev.length; i++) {
-                const moji = sorted[i];
-                if (moji.position.y === 25) continue;
-                const index = sorted
-                    .slice(0, i)
-                    .findIndex((v) => v.position.y === moji.position.y + 2 && v.position.x === moji.position.x);
-                if (index !== -1) continue;
-                sorted[i].position.y++;
+            const newState: Moji[] = [];
+            for (const { ...moji } of prev) {
+                if (moji.position.y >= 26) continue;
+
+                const piled = prev.find(
+                    (v) => v.position.y === moji.position.y + 2 && v.position.x === moji.position.x && !v.controllable
+                );
+                if (!piled && moji.position.y <= 24) moji.position.y++;
+
+                newState.push(moji);
             }
-            return sorted;
+            return newState;
         }
         case 'drop': {
-            const sorted = [...prev].sort((a, b) => b.position.y - a.position.y);
+            const newState: Moji[] = [];
             for (let i = 0; i < prev.length; i++) {
-                const moji = sorted[i];
-                if (moji.position.y === 25) continue;
-                const piled = sorted
-                    .slice(0, i)
-                    .find(
-                        (v) =>
-                            (v.position.y === moji.position.y + 2 || v.position.y === moji.position.y + 3) &&
-                            v.position.x === moji.position.x
-                    );
-                if (!piled) {
-                    sorted[i].position.y += 2;
-                    continue;
-                }
-                if (piled.position.y - moji.position.y === 2) continue;
-                if (piled.position.y - moji.position.y === 3) sorted[i].position.y += 1;
+                const moji = { ...prev[i] };
+                if (moji.position.y >= 26) continue;
+                const piled = prev.find(
+                    (v) =>
+                        (v.position.y === moji.position.y + 2 || v.position.y === moji.position.y + 3) &&
+                        v.position.x === moji.position.x &&
+                        !moji.controllable
+                );
+                if (!piled && moji.position.y <= 23) moji.position.y += 2;
+                if (piled && piled.position.y - moji.position.y === 3) moji.position.y += 1;
+                newState.push(moji);
             }
-            return sorted;
+            return newState;
         }
         case 'moveDown': {
             const newState = [...prev];
