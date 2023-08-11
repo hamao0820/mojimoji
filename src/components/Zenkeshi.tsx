@@ -1,14 +1,14 @@
-import React from 'react';
-import { Config } from '../config';
+import { FC } from 'react';
+import { Config } from '../logic/config';
 
 type ZenkeshiProps = {
     showRatio: number;
     hideRatio: number;
 };
 
-export const Zenkeshi: React.VFC<ZenkeshiProps> = ({ showRatio, hideRatio }) => {
-    const startTop = Config.puyoImgHeight * Config.stageRows;
-    const endTop = (Config.puyoImgHeight * Config.stageRows) / 3;
+export const Zenkeshi: FC<ZenkeshiProps> = ({ showRatio, hideRatio }) => {
+    const startTop = Config.mojiImgHeight * Config.stageRows;
+    const endTop = (Config.mojiImgHeight * Config.stageRows) / 3;
     const top = (endTop - startTop) * showRatio + startTop;
     const opacity = 1 - hideRatio;
 
@@ -19,7 +19,7 @@ export const Zenkeshi: React.VFC<ZenkeshiProps> = ({ showRatio, hideRatio }) => 
                 position: 'absolute',
                 top,
                 opacity,
-                width: Config.puyoImgWidth * 6,
+                width: Config.mojiImgWidth * 6,
             }}
         />
     );

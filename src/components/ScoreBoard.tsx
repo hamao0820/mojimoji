@@ -1,5 +1,5 @@
-import React, { useMemo } from 'react';
-import { Config } from '../config';
+import { FC, useMemo } from 'react';
+import { Config } from '../logic/config';
 
 type ScoreboardProps = {
     score: number;
@@ -9,9 +9,9 @@ const digitImageWidth = 53;
 const digitImageHeight = 67;
 const digitWidth = (digitImageWidth / digitImageHeight) * Config.fontHeight;
 
-const maxDigits = Math.floor((Config.stageCols * Config.puyoImgWidth) / digitWidth);
+const maxDigits = Math.floor((Config.stageCols * Config.mojiImgWidth) / digitWidth);
 
-export const Scoreboard: React.VFC<ScoreboardProps> = ({ score }) => {
+export const Scoreboard: FC<ScoreboardProps> = ({ score }) => {
     const digits = useMemo(() => splitIntoDigits(score), [score]);
     return (
         <div
@@ -20,7 +20,7 @@ export const Scoreboard: React.VFC<ScoreboardProps> = ({ score }) => {
                 overflow: 'hidden',
                 textAlign: 'right',
                 backgroundColor: Config.scoreBackgroundColor,
-                width: Config.puyoImgWidth * Config.stageCols,
+                width: Config.mojiImgWidth * Config.stageCols,
                 height: Config.fontHeight,
             }}
         >

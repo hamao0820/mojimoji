@@ -1,13 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { GameStage } from './GameStage';
-import { Scoreboard } from './Scoreboard';
-import { initialize, tick, getBatankyuAnimationRatio } from '../game';
-import { Score } from '../score';
-import { Stage } from '../stage';
-import { Player } from '../player';
+import { Scoreboard } from './ScoreBoard';
+import { initialize, tick, getBatankyuAnimationRatio } from '../logic/game';
+import { Score } from '../logic/score';
+import { Stage } from '../logic/stage';
+import { Player } from '../logic/player';
 import { Batankyu } from './Batankyu';
 import { Zenkeshi } from './Zenkeshi';
-import { Config } from '../config';
+import { Config } from '../logic/config';
 
 // まずステージを整える
 const initialFrame = initialize();
@@ -33,7 +33,7 @@ export const Game: React.VFC = () => {
 
     // console.log(frame)
 
-    const puyos = [...Stage.getFixedPuyos(), ...Stage.getErasingPuyos(), ...Player.getPlayingPuyos()];
+    const mojis = [...Stage.getFixedMojis(), ...Stage.getErasingMojis(), ...Player.getPlayingMojis()];
     const batankyuAnimationRatio = getBatankyuAnimationRatio(frame);
     const zenkeshiAnimationState = Stage.getZenkeshiAnimationState(frame);
 
@@ -41,14 +41,14 @@ export const Game: React.VFC = () => {
         <div
             style={{
                 position: 'relative',
-                width: Config.puyoImgWidth * Config.stageCols,
+                width: Config.mojiImgWidth * Config.stageCols,
                 margin: '0 auto',
                 overflow: 'hidden',
-                background: 'url(img/puyo_2bg.png)',
+                background: 'url(img/moji_2bg.png)',
             }}
         >
             {zenkeshiAnimationState && <Zenkeshi {...zenkeshiAnimationState} />}
-            <GameStage puyos={puyos} />
+            <GameStage mojis={mojis} />
             {batankyuAnimationRatio !== null && <Batankyu animationRatio={batankyuAnimationRatio} />}
             <Scoreboard score={Score.score} />
         </div>

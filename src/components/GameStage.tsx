@@ -1,24 +1,24 @@
-import React from 'react';
-import { Config } from '../config';
-import { PuyoImage } from './PuyoImage';
-import { PuyoOnStage } from '../puyo';
+import { FC } from 'react';
+import { Config } from '../logic/config';
+import { MojiImage } from './MojiImage';
+import { MojiOnStage } from '../logic/moji';
 
 export type GameStageProps = {
-    puyos: PuyoOnStage[];
+    mojis: MojiOnStage[];
 };
 
-export const GameStage: React.VFC<GameStageProps> = ({ puyos }) => {
+export const GameStage: FC<GameStageProps> = ({ mojis }) => {
     return (
         <div
             style={{
-                width: Config.puyoImgWidth * Config.stageCols,
-                height: Config.puyoImgHeight * Config.stageRows,
+                width: Config.mojiImgWidth * Config.stageCols,
+                height: Config.mojiImgHeight * Config.stageRows,
                 backgroundColor: Config.stageBackgroundColor,
-                backgroundImage: 'url(img/puyo_2bg.png)',
+                backgroundImage: 'url(img/moji_2bg.png)',
             }}
         >
-            {puyos.map(({ puyoId, ...puyo }) => (
-                <PuyoImage key={puyoId} {...puyo} />
+            {mojis.map(({ mojiId, ...moji }) => (
+                <MojiImage key={mojiId} {...moji} />
             ))}
         </div>
     );
