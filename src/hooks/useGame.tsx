@@ -76,6 +76,7 @@ const useGame = () => {
     const [initialTime] = useState(Date.now());
     const grid: Grid = Array.from({ length: 26 }, () => Array.from({ length: 6 }, () => null));
     const [deletedId, setDeletedId] = useState<Id[]>([]);
+    const [started, setStarted] = useState(false);
 
     for (const moji of mojiList) {
         grid[moji.position.y][moji.position.x] = moji;
@@ -83,6 +84,9 @@ const useGame = () => {
     const [isGameOver, setIsGameOver] = useState(false);
     // let isGameOver = checkAllMojiHaveFallen(grid) && grid[3][2];
 
+    const start = () => {
+        setStarted(true);
+    };
     const handleLR = useCallback(
         (e: KeyboardEvent) => {
             if (isGameOver) return;
@@ -172,6 +176,7 @@ const useGame = () => {
     }, [dispatch, grid]);
 
     useEffect(() => {
+        if (!started) return;
         if (isGameOver) {
             alert('game over');
             return;
@@ -181,7 +186,7 @@ const useGame = () => {
         const diff = nextTime - now;
         const timeId = setInterval(step, diff);
         return () => clearInterval(timeId);
-    }, [initialTime, step, isGameOver]);
+    }, [initialTime, step, isGameOver, started]);
 
     useEffect(() => {
         document.addEventListener('keydown', handleLR);
