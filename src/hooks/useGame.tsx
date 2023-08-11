@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import useMojiList, { Moji } from './useMojiList';
+import useMojiList, { Id, Moji } from './useMojiList';
 import { getCorrectWordsAndLines } from '../utility/judgeWord';
 
 export type Position = {
@@ -36,6 +36,7 @@ export type Grid = (Moji | null)[][];
 
 const interval = 500;
 
+// FIXME
 const checkGameOver = (grid: Grid) => grid.every((row, i) => i % 2 === 0 || row[2] !== null);
 
 const checkAllMojiHaveFallen = (grid: Grid): boolean => {
@@ -77,31 +78,12 @@ const useGame = () => {
     const { mojiList, dispatch } = useMojiList();
     const [initialTime] = useState(Date.now());
     const grid: Grid = Array.from({ length: 26 }, () => Array.from({ length: 6 }, () => null));
+    const [deletedId, setDeletedId] = useState<Id[]>([]);
+
     for (const moji of mojiList) {
         grid[moji.position.y][moji.position.x] = moji;
     }
-
-    const appearMoji = useCallback(() => {
-        const charList = [...'ーウイシクツヨキリカ'];
-        dispatch({
-            type: 'add',
-            payload: {
-                position: { y: 1, x: 2 },
-                char: charList[Math.floor(Math.random() * charList.length)],
-                axis: false,
-                id: crypto.randomUUID(),
-            },
-        });
-        dispatch({
-            type: 'add',
-            payload: {
-                position: { y: 3, x: 2 },
-                char: charList[Math.floor(Math.random() * charList.length)],
-                axis: true,
-                id: crypto.randomUUID(),
-            },
-        });
-    }, [dispatch]);
+    const isGameOver = checkGameOver(grid);
 
     const handleLR = useCallback(
         (e: KeyboardEvent) => {
@@ -159,47 +141,65 @@ const useGame = () => {
         [dispatch, grid]
     );
 
+    const loop = useCallback(async () => {
+        const appearMoji = () => {
+            const charList = [...'ウイシクツヨキリカ'];
+            dispatch({
+                type: 'add',
+                payload: {
+                    position: { y: 1, x: 2 },
+                    char: charList[Math.floor(Math.random() * charList.length)],
+                    axis: false,
+                    id: crypto.randomUUID(),
+                },
+            });
+            dispatch({
+                type: 'add',
+                payload: {
+                    position: { y: 3, x: 2 },
+                    char: charList[Math.floor(Math.random() * charList.length)],
+                    axis: true,
+                    id: crypto.randomUUID(),
+                },
+            });
+        };
+
+        if (!checkControllable(grid)) {
+            dispatch({ type: 'fix' });
+        }
+        if (checkAllMojiHaveFallen(grid)) {
+            const wordsAndLines = getCorrectWordsAndLines(grid);
+            const allIdList: Id[] = [];
+            for (const [word, line] of wordsAndLines) {
+                const idList = line
+                    .map((pos) => grid[pos.y][pos.x])
+                    .filter((moji): moji is Moji => !!moji)
+                    .map((moji) => moji.id);
+                allIdList.push(...idList);
+
+                // TODO: アニメーションを入れる.
+                setDeletedId((prev) => [...prev, ...idList]);
+                console.log(word);
+                await new Promise((resolve) => setTimeout(resolve, 500));
+            }
+            dispatch({ type: 'delete', payload: { idList: allIdList } });
+            setDeletedId([]);
+            if (wordsAndLines.length === 0) appearMoji();
+        }
+        dispatch({ type: 'fall' });
+    }, [dispatch, grid]);
+
     useEffect(() => {
-        const now = Date.now();
-        let nextTime = now + interval - ((now - initialTime) % interval);
-        if (checkGameOver(grid)) {
-            console.log('game over');
-            // dispatch({ type: 'fix' });
+        if (isGameOver) {
+            alert('game over');
             return;
         }
-        const loop = () => {
-            dispatch({ type: 'fall' });
-            if (!checkControllable(grid)) {
-                dispatch({ type: 'fix' });
-            }
-            if (checkAllMojiHaveFallen(grid)) {
-                dispatch({ type: 'fix' });
-                const wordsAndLines = getCorrectWordsAndLines(grid);
-                for (const [, line] of wordsAndLines) {
-                    const idList = line
-                        .map((pos) => grid[pos.y][pos.x])
-                        .filter((moji): moji is Moji => !!moji)
-                        .map((moji) => moji.id);
-                    for (const id of idList) {
-                        dispatch({ type: 'delete', payload: { id } });
-                    }
-                }
-                appearMoji();
-            }
-            const now = Date.now();
-            nextTime = now + interval - ((nextTime - now) % interval);
-            const diff = nextTime - now;
-
-            timerId = setTimeout(loop, diff);
-        };
+        const now = Date.now();
+        const nextTime = now + interval - ((now - initialTime) % interval);
         const diff = nextTime - now;
-        if (!checkControllable(grid) && !checkAllMojiHaveFallen(grid))
-            setTimeout(() => dispatch({ type: 'fall' }), diff);
-        let timerId = setTimeout(loop, diff);
-        return () => {
-            clearTimeout(timerId);
-        };
-    }, [appearMoji, dispatch, grid, initialTime]);
+        const timeId = setInterval(loop, diff);
+        return () => clearInterval(timeId);
+    }, [initialTime, loop, isGameOver]);
 
     useEffect(() => {
         document.addEventListener('keydown', handleLR);
@@ -220,7 +220,7 @@ const useGame = () => {
         document.addEventListener('keydown', handleTurnLeft);
         return () => document.removeEventListener('keydown', handleTurnLeft);
     }, [handleTurnLeft]);
-    return { grid, mojiList };
+    return { grid, mojiList, deletedId };
 };
 
 export default useGame;

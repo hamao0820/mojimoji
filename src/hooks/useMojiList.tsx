@@ -1,12 +1,13 @@
 import { Reducer, useReducer } from 'react';
 import { Position } from './useGame';
 
+export type Id = `${string}-${string}-${string}-${string}-${string}`;
 export type Moji = {
     position: Position;
     char: string;
     controllable: boolean;
     axis: boolean;
-    id: `${string}-${string}-${string}-${string}-${string}`;
+    id: Id;
 };
 type ChildRelativePosition = 'top' | 'right' | 'bottom' | 'left';
 export type Action =
@@ -24,10 +25,10 @@ export type Action =
               position: Position;
               char: string;
               axis: boolean;
-              id: `${string}-${string}-${string}-${string}-${string}`;
+              id: Id;
           };
       }
-    | { type: 'delete'; payload: { id: `${string}-${string}-${string}-${string}-${string}` } }
+    | { type: 'delete'; payload: { idList: Id[] } }
     | { type: 'fix' };
 
 const canMoveRight = (controllableList: Moji[], MojiList: Moji[]) => {
@@ -447,7 +448,7 @@ const reducer: Reducer<Moji[], Action> = (prev: Moji[], action: Action): Moji[] 
             ];
         }
         case 'delete': {
-            return prev.filter((moji) => action.payload.id !== moji.id);
+            return prev.filter((moji) => !action.payload.idList.includes(moji.id));
         }
         case 'fix': {
             return [...prev].map((moji) => {

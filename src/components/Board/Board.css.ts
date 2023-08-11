@@ -1,4 +1,4 @@
-import { style } from '@vanilla-extract/css';
+import { keyframes, style } from '@vanilla-extract/css';
 
 export const board = style({
     width: 330,
@@ -19,4 +19,23 @@ export const cell = style({
     fontWeight: 'bolder',
     fontSize: '2.5rem',
     padding: 0,
+});
+
+export const shine = keyframes({
+    '50%': { color: 'red' },
+    '100%': { color: 'gray', opacity: '0.3' },
+});
+
+export const deletedCell = style({
+    width: 55,
+    height: 27.5,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    fontWeight: 'bolder',
+    fontSize: '2.5rem',
+    padding: 0,
+    color: 'red',
+    animationName: shine,
+    animationDuration: '0.3s',
 });
