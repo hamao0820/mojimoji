@@ -10,7 +10,7 @@ type GameMode =
     | 'fall'
     | 'checkErase'
     | 'erasing'
-    | 'newPuyo'
+    | 'newMoji'
     | 'playing'
     | 'moving'
     | 'rotating'
@@ -35,11 +35,12 @@ export function initialize(): number {
 
 export function tick(frame: number): number {
     switch (mode) {
-        case 'start':
+        case 'start': {
             // 最初は、もしかしたら空中にあるかもしれないぷよを自由落下させるところからスタート
             mode = 'checkFall';
             break;
-        case 'checkFall':
+        }
+        case 'checkFall': {
             // 落ちるかどうか判定する
             if (Stage.checkFall()) {
                 mode = 'fall';
@@ -48,13 +49,15 @@ export function tick(frame: number): number {
                 mode = 'checkErase';
             }
             break;
-        case 'fall':
+        }
+        case 'fall': {
             if (!Stage.fall()) {
                 // すべて落ちきったら、ぷよを消せるかどうか判定する
                 mode = 'checkErase';
             }
             break;
-        case 'checkErase':
+        }
+        case 'checkErase': {
             // 消せるかどうか判定する
             const eraseInfo = Stage.checkErase(frame);
             if (eraseInfo) {
@@ -64,24 +67,26 @@ export function tick(frame: number): number {
                 Score.addErasingScore(combinationCount, eraseInfo.piece, eraseInfo.color);
                 Stage.hideZenkeshi(frame);
             } else {
-                if (Stage.getFixedPuyos().length === 0 && combinationCount > 0) {
+                if (Stage.getFixedMojis().length === 0 && combinationCount > 0) {
                     // 全消しの処理をする
                     Stage.showZenkeshi(frame);
                     Score.addZenkeshiScore();
                 }
                 combinationCount = 0;
                 // 消せなかったら、新しいぷよを登場させる
-                mode = 'newPuyo';
+                mode = 'newMoji';
             }
             break;
-        case 'erasing':
+        }
+        case 'erasing': {
             if (!Stage.erasing(frame)) {
                 // 消し終わったら、再度落ちるかどうか判定する
                 mode = 'checkFall';
             }
             break;
-        case 'newPuyo':
-            if (!Player.createNewPuyo()) {
+        }
+        case 'newMoji': {
+            if (!Player.createNewMoji()) {
                 // 新しい操作用ぷよを作成出来なかったら、ゲームオーバー
                 mode = 'gameOver';
             } else {
@@ -89,37 +94,44 @@ export function tick(frame: number): number {
                 mode = 'playing';
             }
             break;
-        case 'playing':
+        }
+        case 'playing': {
             // プレイヤーが操作する
             const action = Player.playing(frame);
             mode = action; // 'playing' 'moving' 'rotating' 'fix' のどれかが帰ってくる
             break;
-        case 'moving':
+        }
+        case 'moving': {
             if (!Player.moving(frame)) {
                 // 移動が終わったので操作可能にする
                 mode = 'playing';
             }
             break;
-        case 'rotating':
+        }
+        case 'rotating': {
             if (!Player.rotating(frame)) {
                 // 回転が終わったので操作可能にする
                 mode = 'playing';
             }
             break;
-        case 'fix':
+        }
+        case 'fix': {
             // 現在の位置でぷよを固定する
             Player.fix();
             // 固定したら、まず自由落下を確認する
             mode = 'checkFall';
             break;
-        case 'gameOver':
+        }
+        case 'gameOver': {
             // ばたんきゅーの準備をする
             gameOverFrame = frame;
             mode = 'batankyu';
             break;
-        case 'batankyu':
+        }
+        case 'batankyu': {
             Player.batankyu();
             break;
+        }
     }
 
     return frame + 1;

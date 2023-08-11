@@ -1,15 +1,15 @@
-import React from 'react';
-import { Config } from '../config';
+import { FC } from 'react';
+import { Config } from '../logic/config';
 
 type BatankyuProps = {
     animationRatio: number;
 };
 
-export const Batankyu: React.VFC<BatankyuProps> = ({ animationRatio }) => {
-    const left = Math.cos(Math.PI / 2 + animationRatio * Math.PI * 2 * 10) * Config.puyoImgWidth;
+export const Batankyu: FC<BatankyuProps> = ({ animationRatio }) => {
+    const left = Math.cos(Math.PI / 2 + animationRatio * Math.PI * 2 * 10) * Config.mojiImgWidth;
     const top =
-        (Math.cos(Math.PI + animationRatio * Math.PI * 2) * Config.puyoImgHeight * Config.stageRows) / 4 +
-        (Config.puyoImgHeight * Config.stageRows) / 2;
+        (Math.cos(Math.PI + animationRatio * Math.PI * 2) * Config.mojiImgHeight * Config.stageRows) / 4 +
+        (Config.mojiImgHeight * Config.stageRows) / 2;
     return (
         <img
             src="img/batankyu.png"
@@ -17,7 +17,7 @@ export const Batankyu: React.VFC<BatankyuProps> = ({ animationRatio }) => {
                 position: 'absolute',
                 left,
                 top,
-                width: Config.puyoImgWidth * 6,
+                width: Config.mojiImgWidth * 6,
             }}
         />
     );
