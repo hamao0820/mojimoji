@@ -20,6 +20,7 @@ export class Stage {
     private static erasingMojiInfoList: MojiOnStage[];
     private static erasingMojiLineList: { x: number; y: number }[][];
     private static erasingMojiLineIdList: number[][];
+    private static erasingWordList: string[];
     private static erasingMojiIsHidden: boolean;
     private static zenkeshiShowStartFrame: number | null;
     private static zenkeshiHideStartFrame: number | null;
@@ -37,6 +38,7 @@ export class Stage {
         this.erasingMojiInfoList = [];
         this.erasingMojiLineList = [];
         this.erasingMojiLineIdList = [];
+        this.erasingWordList = [];
         this.zenkeshiShowStartFrame = null;
         this.zenkeshiHideStartFrame = null;
     }
@@ -70,6 +72,13 @@ export class Stage {
         }
 
         return { showRatio, hideRatio };
+    }
+
+    static getErasingWord(): string | null {
+        if (!this.erasingWordList.length) {
+            return null;
+        }
+        return this.erasingWordList[0];
     }
 
     // メモリに moji をセットする
@@ -148,13 +157,10 @@ export class Stage {
     static checkErase(startFrame: number) {
         this.eraseStartFrame = startFrame;
 
-        // どのような単語を消したかを記録する
-        const erasedMojiWord: string[] = [];
-
         const wordsAndLines = getCorrectWordsAndLines(this.board);
         const erasePosList: { x: number; y: number }[] = [];
         for (const [word, line] of wordsAndLines) {
-            erasedMojiWord.push(word);
+            this.erasingWordList.push(word);
             this.erasingMojiLineList.push(line);
             const lineIdList: number[] = [];
             line.forEach((pos) => {
@@ -172,7 +178,7 @@ export class Stage {
             // もし消せるならば、消えるもじの個数と文字の長さの情報をまとめて返す
             return {
                 piece: this.erasingMojiInfoList.length,
-                longestWordLength: erasedMojiWord.reduce((prev, word) => Math.max(prev, word.length), 0),
+                longestWordLength: this.erasingWordList.reduce((prev, word) => Math.max(prev, word.length), 0),
             };
         }
         return null;
@@ -192,6 +198,7 @@ export class Stage {
         if (ratio > 1) {
             this.erasingMojiLineList.shift();
             this.erasingMojiLineIdList.shift();
+            this.erasingWordList.shift();
             this.eraseStartFrame = frame;
         } else if (ratio > 0.75) {
             this.erasingMojiIsHidden = false;
