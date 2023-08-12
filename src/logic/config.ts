@@ -7,8 +7,8 @@ export const Config = {
     mojiImgWidth: 40, // ぷよぷよ画像の幅
     mojiImgHeight: 40, // ぷよぷよ画像の高さ
 
-    stageBackgroundColor: '#ffffff', // ステージの背景色
-    scoreBackgroundColor: '#24c0bb', // スコアの背景色
+    stageBackgroundColor: 'rgba(255, 255, 255, 0.5)', // ステージの背景色
+    scoreBackgroundColor: '#000000', // スコアの背景色
 
     freeFallingSpeed: 16, // 自由落下のスピード
     eraseMojiCount: 4, // 何個以上揃ったら消えるか

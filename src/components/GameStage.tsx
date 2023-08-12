@@ -14,7 +14,8 @@ export const GameStage: FC<GameStageProps> = ({ mojis }) => {
                 width: Config.mojiImgWidth * Config.stageCols,
                 height: Config.mojiImgHeight * Config.stageRows,
                 backgroundColor: Config.stageBackgroundColor,
-                backgroundImage: 'url(img/moji_2bg.png)',
+                backgroundImage: 'url(img/mojimoji.png)',
+                backgroundBlendMode: 'lighten',
             }}
         >
             {mojis.map(({ mojiId, ...moji }) => (

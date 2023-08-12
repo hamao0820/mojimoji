@@ -1,5 +1,6 @@
 import { FC, useMemo } from 'react';
 import { Config } from '../logic/config';
+import { scoreBoard } from './ScoreBoard.css';
 
 type ScoreboardProps = {
     score: number;
@@ -15,10 +16,8 @@ export const Scoreboard: FC<ScoreboardProps> = ({ score }) => {
     const digits = useMemo(() => splitIntoDigits(score), [score]);
     return (
         <div
+            className={scoreBoard}
             style={{
-                margin: '0 auto',
-                overflow: 'hidden',
-                textAlign: 'right',
                 backgroundColor: Config.scoreBackgroundColor,
                 width: Config.mojiImgWidth * Config.stageCols,
                 height: Config.fontHeight,
