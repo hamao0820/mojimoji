@@ -9,8 +9,9 @@ import { Batankyu } from './Batankyu';
 import { Zenkeshi } from './Zenkeshi';
 import { Config } from '../logic/config';
 import Dictionary from './Dictionary';
-import { board, game } from './Game.css';
+import { board, game, startButton } from './Game.css';
 import Next from './Next';
+import useCountDown from '../hooks/useCountDown';
 
 // まずステージを整える
 const initialFrame = initialize();
@@ -18,6 +19,15 @@ const initialFrame = initialize();
 export const Game: FC = () => {
     const reqIdRef = useRef<number>();
     const [frame, setFrame] = useState(initialFrame); // ゲームの現在フレーム（1/60秒ごとに1追加される）
+    const [gameStarted, setGameStarted] = useState(false);
+    const [countDownStarted, setCountDownStarted] = useState(false);
+    const count = useCountDown(
+        3,
+        () => {
+            setGameStarted(true);
+        },
+        countDownStarted
+    );
 
     const loop = () => {
         reqIdRef.current = requestAnimationFrame(loop); // 1/60秒後にもう一度呼び出す
@@ -25,6 +35,7 @@ export const Game: FC = () => {
     };
 
     useEffect(() => {
+        if (!gameStarted) return;
         // ゲームを開始する
         loop();
         return () => {
@@ -33,7 +44,7 @@ export const Game: FC = () => {
             }
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [gameStarted]);
 
     // console.log(frame)
 
@@ -45,6 +56,10 @@ export const Game: FC = () => {
 
     return (
         <div className={game}>
+            <button className={startButton} onClick={() => setCountDownStarted(true)}>
+                スタート
+            </button>
+            <div>{count > 0 && count}</div>
             <div style={{ width: Config.mojiImgWidth * Config.stageCols }} className={board}>
                 {zenkeshiAnimationState && <Zenkeshi {...zenkeshiAnimationState} />}
                 <GameStage mojis={mojis} />

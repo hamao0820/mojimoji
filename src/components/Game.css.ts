@@ -11,3 +11,11 @@ export const game = style({
     // height: '100vh',
     display: 'flex',
 });
+
+export const startButton = style({
+    width: '100px',
+    height: '50px',
+    textAlign: 'center',
+    fontSize: '1.1rem',
+    fontWeight: 'bold',
+});
