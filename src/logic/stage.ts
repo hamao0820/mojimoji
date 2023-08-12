@@ -18,6 +18,8 @@ export class Stage {
     private static fallingMojiList: FallingMoji[];
     private static eraseStartFrame: number;
     private static erasingMojiInfoList: MojiOnStage[];
+    private static erasingMojiLineList: { x: number; y: number }[][];
+    private static erasingMojiLineIdList: number[][];
     private static erasingMojiIsHidden: boolean;
     private static zenkeshiShowStartFrame: number | null;
     private static zenkeshiHideStartFrame: number | null;
@@ -33,6 +35,8 @@ export class Stage {
         }
         this.fallingMojiList = [];
         this.erasingMojiInfoList = [];
+        this.erasingMojiLineList = [];
+        this.erasingMojiLineIdList = [];
         this.zenkeshiShowStartFrame = null;
         this.zenkeshiHideStartFrame = null;
     }
@@ -44,7 +48,10 @@ export class Stage {
     static getErasingMojis(): MojiOnStage[] {
         return this.erasingMojiInfoList.map((moji) => ({
             ...moji,
-            hidden: this.erasingMojiIsHidden,
+            hidden:
+                this.erasingMojiLineIdList.length && this.erasingMojiLineIdList[0].includes(moji.mojiId)
+                    ? this.erasingMojiIsHidden
+                    : false,
         }));
     }
 
@@ -140,19 +147,26 @@ export class Stage {
     // 消せるかどうか判定する
     static checkErase(startFrame: number) {
         this.eraseStartFrame = startFrame;
-        this.erasingMojiInfoList.length = 0;
 
         // どのような単語を消したかを記録する
         const erasedMojiWord: string[] = [];
 
         const wordsAndLines = getCorrectWordsAndLines(this.board);
+        const erasePosList: { x: number; y: number }[] = [];
         for (const [word, line] of wordsAndLines) {
             erasedMojiWord.push(word);
+            this.erasingMojiLineList.push(line);
+            const lineIdList: number[] = [];
             line.forEach((pos) => {
-                this.board[pos.y][pos.x] && this.erasingMojiInfoList.push(this.board[pos.y][pos.x]!);
-                this.board[pos.y][pos.x] = null;
+                const moji = this.board[pos.y][pos.x];
+                if (!moji) return;
+                this.erasingMojiInfoList.push(moji);
+                lineIdList.push(moji.mojiId);
+                erasePosList.push(pos);
             });
+            this.erasingMojiLineIdList.push(lineIdList);
         }
+        erasePosList.forEach((pos) => (this.board[pos.y][pos.x] = null));
 
         if (this.erasingMojiInfoList.length) {
             // もし消せるならば、消えるもじの個数と文字の長さの情報をまとめて返す
@@ -164,28 +178,32 @@ export class Stage {
         return null;
     }
 
-    // TODO: ひとつずつ消すアニメーションをする
     // 消すアニメーションをする
     static erasing(frame: number) {
         const elapsedFrame = frame - this.eraseStartFrame;
         const ratio = elapsedFrame / Config.eraseAnimationDuration;
-        if (ratio > 1) {
+
+        if (!this.erasingMojiLineList.length && !this.erasingMojiLineIdList.length) {
             // アニメーションを終了する
             this.erasingMojiInfoList = [];
             return false;
+        }
+
+        if (ratio > 1) {
+            this.erasingMojiLineList.shift();
+            this.erasingMojiLineIdList.shift();
+            this.eraseStartFrame = frame;
         } else if (ratio > 0.75) {
             this.erasingMojiIsHidden = false;
-            return true;
         } else if (ratio > 0.5) {
             this.erasingMojiIsHidden = true;
-            return true;
         } else if (ratio > 0.25) {
             this.erasingMojiIsHidden = false;
-            return true;
         } else {
             this.erasingMojiIsHidden = true;
-            return true;
         }
+
+        return true;
     }
 
     static showZenkeshi(frame: number) {

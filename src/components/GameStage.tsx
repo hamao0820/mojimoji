@@ -18,7 +18,7 @@ export const GameStage: FC<GameStageProps> = ({ mojis }) => {
             }}
         >
             {mojis.map(({ mojiId, ...moji }) => (
-                <MojiImage key={mojiId} {...moji} />
+                <MojiImage key={`${mojiId} ${crypto.randomUUID()}`} {...moji} />
             ))}
         </div>
     );
