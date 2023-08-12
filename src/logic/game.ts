@@ -131,7 +131,6 @@ export const tick = (frame: number): number => {
             break;
         }
         case 'batankyu': {
-            Player.batankyu();
             break;
         }
     }

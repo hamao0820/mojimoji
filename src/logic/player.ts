@@ -380,12 +380,6 @@ export class Player {
         this.centerMoji = null;
         this.movableMoji = null;
     }
-
-    static batankyu() {
-        if (Input.keyStatus.up) {
-            location.reload();
-        }
-    }
 }
 
 const generateMoji = (): Moji => {
