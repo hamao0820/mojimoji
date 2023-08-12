@@ -4,7 +4,6 @@ export const board = style({
     position: 'relative',
     margin: '0 auto',
     overflow: 'hidden',
-    background: 'url(img/moji_2bg.png)',
 });
 
 export const game = style({

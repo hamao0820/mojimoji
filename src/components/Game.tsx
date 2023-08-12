@@ -10,6 +10,7 @@ import { Zenkeshi } from './Zenkeshi';
 import { Config } from '../logic/config';
 import Dictionary from './Dictionary';
 import { board, game } from './Game.css';
+import Next from './Next';
 
 // まずステージを整える
 const initialFrame = initialize();
@@ -40,6 +41,7 @@ export const Game: FC = () => {
     const batankyuAnimationRatio = getBatankyuAnimationRatio(frame);
     const zenkeshiAnimationState = Stage.getZenkeshiAnimationState(frame);
     const erasingWord = Stage.getErasingWord();
+    const { next, wNext } = Player.getNextMojis();
 
     return (
         <div className={game}>
@@ -48,6 +50,10 @@ export const Game: FC = () => {
                 <GameStage mojis={mojis} />
                 {batankyuAnimationRatio !== null && <Batankyu animationRatio={batankyuAnimationRatio} />}
                 <Scoreboard score={Score.score} />
+            </div>
+            <div>
+                <Next centerChar={next.center!.char} movableChar={next.movable!.char} />
+                <Next centerChar={wNext.center!.char} movableChar={wNext.movable!.char} />
             </div>
             <Dictionary word={erasingWord} />
         </div>

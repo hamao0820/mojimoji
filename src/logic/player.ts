@@ -19,6 +19,11 @@ export class Player {
     private static movableMoji: Moji | null;
     private static mojiStatus: MojiStatus;
 
+    private static nextCenterMoji: Moji | null;
+    private static nextMovableMoji: Moji | null;
+    private static wNextCenterMoji: Moji | null;
+    private static wNextMovableMoji: Moji | null;
+
     private static groundFrame: number;
 
     private static actionStartFrame: number;
@@ -28,6 +33,18 @@ export class Player {
     private static rotateAfterLeft: number;
     private static rotateFromRotation: number;
 
+    static initialize() {
+        this.nextCenterMoji = generateMoji();
+        this.nextMovableMoji = generateMoji();
+        this.wNextCenterMoji = generateMoji();
+        this.wNextMovableMoji = generateMoji();
+    }
+
+    static createNewWNextMoji() {
+        this.wNextCenterMoji = generateMoji();
+        this.wNextMovableMoji = generateMoji();
+    }
+
     //もじ設置確認
     static createNewMoji() {
         // もじもじが置けるかどうか、1番上の段の左から3つ目を確認する
@@ -35,9 +52,17 @@ export class Player {
             // 空白でない場合は新しいもじを置けない
             return false;
         }
-        // 新しいもじを作成する
-        this.centerMoji = generateMoji();
-        this.movableMoji = generateMoji();
+        // ネクストを設置する
+        this.centerMoji = { ...this.nextCenterMoji! };
+        this.movableMoji = { ...this.nextMovableMoji! };
+
+        // ネクストにダブネクを移す
+        this.nextCenterMoji = { ...this.wNextCenterMoji! };
+        this.nextMovableMoji = { ...this.wNextMovableMoji! };
+
+        // 新しくダブネクを作る
+        this.createNewWNextMoji();
+
         // もじの初期配置を定める
         this.mojiStatus = {
             x: 2, // 中心もじの位置: 左から2列目
@@ -78,6 +103,16 @@ export class Player {
                 },
             },
         ];
+    }
+
+    static getNextMojis(): {
+        next: { center: Moji | null; movable: Moji | null };
+        wNext: { center: Moji | null; movable: Moji | null };
+    } {
+        return {
+            next: { center: this.nextCenterMoji, movable: this.nextMovableMoji },
+            wNext: { center: this.wNextCenterMoji, movable: this.wNextMovableMoji },
+        };
     }
 
     private static falling(isDownPressed: boolean) {

@@ -29,6 +29,8 @@ export const initialize = (): number => {
     Input.initialize();
     // スコア表示の準備をする
     Score.initialize();
+    // プレイヤーの準備をする
+    Player.initialize();
     mode = 'start';
     return 0;
 };
