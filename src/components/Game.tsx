@@ -5,7 +5,7 @@ import { initialize, tick, getBatankyuAnimationRatio } from '../logic/game';
 import { Score } from '../logic/score';
 import { Stage } from '../logic/stage';
 import { Player } from '../logic/player';
-import { Batankyu } from './Batankyu';
+import { GameOver } from './GameOver';
 import { Zenkeshi } from './Zenkeshi';
 import { Config } from '../logic/config';
 import Dictionary from './Dictionary';
@@ -63,7 +63,7 @@ export const Game: FC = () => {
             <div style={{ width: Config.mojiImgWidth * Config.stageCols }} className={board}>
                 {zenkeshiAnimationState && <Zenkeshi {...zenkeshiAnimationState} />}
                 <GameStage mojis={mojis} />
-                {batankyuAnimationRatio !== null && <Batankyu animationRatio={batankyuAnimationRatio} />}
+                {batankyuAnimationRatio !== null && <GameOver animationRatio={batankyuAnimationRatio} />}
                 <Scoreboard score={Score.score} />
             </div>
             <div>

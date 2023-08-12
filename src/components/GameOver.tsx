@@ -1,18 +1,18 @@
 import { FC } from 'react';
 import { Config } from '../logic/config';
 
-type BatankyuProps = {
+type Props = {
     animationRatio: number;
 };
 
-export const Batankyu: FC<BatankyuProps> = ({ animationRatio }) => {
+export const GameOver: FC<Props> = ({ animationRatio }) => {
     const left = Math.cos(Math.PI / 2 + animationRatio * Math.PI * 2 * 10) * Config.mojiImgWidth;
     const top =
         (Math.cos(Math.PI + animationRatio * Math.PI * 2) * Config.mojiImgHeight * Config.stageRows) / 4 +
         (Config.mojiImgHeight * Config.stageRows) / 2;
     return (
         <img
-            src="img/batankyu.png"
+            src="img/game_over.png"
             style={{
                 position: 'absolute',
                 left,
