@@ -22,7 +22,6 @@ export const Config = {
     playerRotateFrame: 10, // 回転に消費するフレーム数
 
     zenkeshiAnimationFrame: 9, // 全消し時のアニメーションのフレーム数
-    gameOverFrame: 3000, // ゲームオーバー演出のサイクルフレーム
 };
 
 // フィールドサイズ追加

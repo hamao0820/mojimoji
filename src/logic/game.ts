@@ -2,7 +2,6 @@ import { Stage } from './stage';
 import { Player } from './player';
 import { Score } from './score';
 import { Input } from './input';
-import { Config } from './config';
 
 type GameMode =
     | 'start'
@@ -22,7 +21,7 @@ class MojiMoji {
     static mode: GameMode | null; // ゲームの現在の状況
     private static comboCount: number | null; // 何連鎖かどうか
     static maxCombo: number | null; // 最大連鎖数:
-    private static gameOverFrame: number | null; // ゲームオーバーになったフレーム
+
     static initialize(): number {
         // ステージを準備する
         Stage.initialize();
@@ -36,7 +35,6 @@ class MojiMoji {
         this.mode = 'start';
         this.comboCount = 0;
         this.maxCombo = 0;
-        this.gameOverFrame = null;
 
         return 0;
     }
@@ -136,7 +134,6 @@ class MojiMoji {
             }
             case 'gameOver': {
                 // ばたんきゅーの準備をする
-                this.gameOverFrame = frame;
                 this.mode = 'batankyu';
                 break;
             }
@@ -146,15 +143,6 @@ class MojiMoji {
         }
 
         return frame + 1;
-    }
-
-    static getBatankyuAnimationRatio(frame: number): number | null {
-        if (this.mode !== 'batankyu') {
-            return null;
-        }
-        if (this.gameOverFrame === null) return 1;
-
-        return (frame - this.gameOverFrame) / Config.gameOverFrame;
     }
 }
 

@@ -49,7 +49,6 @@ export const Game: FC = () => {
     }, []);
 
     const mojis = [...Stage.getFixedMojis(), ...Stage.getErasingMojis(), ...Player.getPlayingMojis()];
-    const batankyuAnimationRatio = MojiMoji.getBatankyuAnimationRatio(frame);
     const zenkeshiAnimationState = Stage.getZenkeshiAnimationState(frame);
     const wordHistory = Player.getWordHistory();
     const { next, wNext } = Player.getNextMojis();
@@ -61,7 +60,7 @@ export const Game: FC = () => {
             <div style={{ width: Config.mojiImgWidth * Config.stageCols }} className={board}>
                 {zenkeshiAnimationState && <Zenkeshi {...zenkeshiAnimationState} />}
                 <GameStage mojis={mojis} />
-                {batankyuAnimationRatio !== null && <GameOver animationRatio={batankyuAnimationRatio} />}
+                {MojiMoji.mode === 'batankyu' && <GameOver />}
                 <Scoreboard score={Score.score} />
             </div>
             <div>
