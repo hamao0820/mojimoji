@@ -33,11 +33,14 @@ export class Player {
     private static rotateAfterLeft: number;
     private static rotateFromRotation: number;
 
+    private static wordHistory: string[];
+
     static initialize() {
         this.nextCenterMoji = generateMoji();
         this.nextMovableMoji = generateMoji();
         this.wNextCenterMoji = generateMoji();
         this.wNextMovableMoji = generateMoji();
+        this.wordHistory = [];
     }
 
     static createNewWNextMoji() {
@@ -379,6 +382,14 @@ export class Player {
         // 操作用に作成したもじ画像を消す
         this.centerMoji = null;
         this.movableMoji = null;
+    }
+
+    static addWordHistory(...words: string[]) {
+        this.wordHistory.push(...words);
+    }
+
+    static getWordHistory() {
+        return this.wordHistory;
     }
 }
 

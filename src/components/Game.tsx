@@ -51,7 +51,7 @@ export const Game: FC = () => {
     const mojis = [...Stage.getFixedMojis(), ...Stage.getErasingMojis(), ...Player.getPlayingMojis()];
     const batankyuAnimationRatio = getBatankyuAnimationRatio(frame);
     const zenkeshiAnimationState = Stage.getZenkeshiAnimationState(frame);
-    const erasingWord = Stage.getErasingWord();
+    const wordHistory = Player.getWordHistory();
     const { next, wNext } = Player.getNextMojis();
 
     return (
@@ -70,7 +70,7 @@ export const Game: FC = () => {
                 <Next centerChar={next.center!.char} movableChar={next.movable!.char} />
                 <Next centerChar={wNext.center!.char} movableChar={wNext.movable!.char} />
             </div>
-            <Dictionary word={erasingWord} />
+            <Dictionary word={wordHistory[wordHistory.length - 1] ?? ''} />
         </div>
     );
 };

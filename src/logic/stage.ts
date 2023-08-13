@@ -179,6 +179,7 @@ export class Stage {
             return {
                 piece: this.erasingMojiInfoList.length,
                 longestWordLength: this.erasingWordList.reduce((prev, word) => Math.max(prev, word.length), 0),
+                wordList: this.erasingWordList,
             };
         }
         return null;
