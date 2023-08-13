@@ -11,7 +11,6 @@ import { Config } from '../logic/config';
 import Dictionary from './Dictionary';
 import { board, game, showHistoryButton, startButton } from './Game.css';
 import Next from './Next';
-import useCountDown from '../hooks/useCountDown';
 import HistoryDialog from './HistoryDialog';
 import { GameStatusBoard } from './GameStatusBoard/GameStatusBoard';
 
@@ -22,15 +21,7 @@ export const Game: FC = () => {
     const reqIdRef = useRef<number>();
     const [frame, setFrame] = useState(initialFrame); // ゲームの現在フレーム（1/60秒ごとに1追加される）
     const [gameStarted, setGameStarted] = useState(false);
-    const [countDownStarted, setCountDownStarted] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
-    const count = useCountDown(
-        3,
-        () => {
-            setGameStarted(true);
-        },
-        countDownStarted
-    );
 
     const loop = () => {
         reqIdRef.current = requestAnimationFrame(loop); // 1/60秒後にもう一度呼び出す
@@ -64,10 +55,9 @@ export const Game: FC = () => {
     const { next, wNext } = Player.getNextMojis();
     return (
         <div className={game}>
-            <button className={startButton} onClick={() => setCountDownStarted(true)}>
+            <button className={startButton} onClick={() => setGameStarted(true)}>
                 スタート
             </button>
-            <div>{count > 0 && count}</div>
             <div style={{ width: Config.mojiImgWidth * Config.stageCols }} className={board}>
                 {zenkeshiAnimationState && <Zenkeshi {...zenkeshiAnimationState} />}
                 <GameStage mojis={mojis} />
