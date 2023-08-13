@@ -22,6 +22,7 @@ export class Stage {
     private static erasingMojiLineIdList: number[][];
     private static erasingWordList: string[];
     private static erasingMojiIsHidden: boolean;
+    private static wordDictionaryIsHidden: boolean;
     private static zenkeshiShowStartFrame: number | null;
     private static zenkeshiHideStartFrame: number | null;
 
@@ -41,6 +42,7 @@ export class Stage {
         this.erasingWordList = [];
         this.zenkeshiShowStartFrame = null;
         this.zenkeshiHideStartFrame = null;
+        this.wordDictionaryIsHidden = true;
     }
 
     static getFixedMojis(): MojiOnStage[] {
@@ -55,6 +57,10 @@ export class Stage {
                     ? this.erasingMojiIsHidden
                     : false,
         }));
+    }
+
+    static getWordDictionaryIsHidden(): boolean {
+        return this.wordDictionaryIsHidden;
     }
 
     static getZenkeshiAnimationState(frame: number): ZenkeshiAnimationState | null {
@@ -200,14 +206,19 @@ export class Stage {
             this.erasingMojiLineList.shift();
             this.erasingMojiLineIdList.shift();
             this.erasingWordList.shift();
+            this.wordDictionaryIsHidden = true;
             this.eraseStartFrame = frame;
         } else if (ratio > 0.75) {
+            this.wordDictionaryIsHidden = false;
             this.erasingMojiIsHidden = false;
         } else if (ratio > 0.5) {
+            this.wordDictionaryIsHidden = false;
             this.erasingMojiIsHidden = true;
         } else if (ratio > 0.25) {
+            this.wordDictionaryIsHidden = false;
             this.erasingMojiIsHidden = false;
         } else {
+            this.wordDictionaryIsHidden = false;
             this.erasingMojiIsHidden = true;
         }
 

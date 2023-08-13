@@ -12,7 +12,7 @@ export const Config = {
 
     freeFallingSpeed: 16, // 自由落下のスピード
     eraseMojiCount: 4, // 何個以上揃ったら消えるか
-    eraseAnimationDuration: 45, // 何フレームでぷよを消すか
+    eraseAnimationDuration: 60, // 何フレームでぷよを消すか
 
     mojiChars: 9, // 何色のぷよを使うか
     playerFallingSpeed: 0.9, // プレイ中の自然落下のスピード

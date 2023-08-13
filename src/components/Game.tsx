@@ -51,6 +51,7 @@ export const Game: FC = () => {
     const mojis = [...Stage.getFixedMojis(), ...Stage.getErasingMojis(), ...Player.getPlayingMojis()];
     const zenkeshiAnimationState = Stage.getZenkeshiAnimationState(frame);
     const wordHistory = Player.getWordHistory();
+    const erasingWord = Stage.getErasingWord();
     const { next, wNext } = Player.getNextMojis();
     return (
         <div className={game}>
@@ -62,6 +63,7 @@ export const Game: FC = () => {
                 <GameStage mojis={mojis} />
                 {MojiMoji.mode === 'batankyu' && <GameOver />}
                 <Scoreboard score={Score.score} />
+                {!Stage.getWordDictionaryIsHidden() && <Dictionary word={erasingWord ?? ''} />}
             </div>
             <div>
                 <Next centerChar={next.center!.char} movableChar={next.movable!.char} />
@@ -76,7 +78,6 @@ export const Game: FC = () => {
                 maxCombo={MojiMoji.maxCombo ?? 0}
                 wordsCount={wordHistory.length}
             />
-            <Dictionary word={wordHistory[wordHistory.length - 1] ?? ''} />
             <HistoryDialog history={wordHistory} isOpen={isOpen} onClose={close} />
         </div>
     );
