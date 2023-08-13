@@ -1,7 +1,7 @@
 import { FC, useCallback, useEffect, useRef, useState } from 'react';
 import { GameStage } from './GameStage';
 import { Scoreboard } from './ScoreBoard';
-import { initialize, tick, getBatankyuAnimationRatio, mode } from '../logic/game';
+import { MojiMoji } from '../logic/game';
 import { Score } from '../logic/score';
 import { Stage } from '../logic/stage';
 import { Player } from '../logic/player';
@@ -16,7 +16,7 @@ import HistoryDialog from './HistoryDialog';
 import { GameStatusBoard } from './GameStatusBoard/GameStatusBoard';
 
 // まずステージを整える
-const initialFrame = initialize();
+const initialFrame = MojiMoji.initialize();
 
 export const Game: FC = () => {
     const reqIdRef = useRef<number>();
@@ -34,7 +34,7 @@ export const Game: FC = () => {
 
     const loop = () => {
         reqIdRef.current = requestAnimationFrame(loop); // 1/60秒後にもう一度呼び出す
-        setFrame(tick);
+        setFrame((prev) => MojiMoji.tick(prev));
     };
 
     useEffect(() => {
@@ -58,7 +58,7 @@ export const Game: FC = () => {
     }, []);
 
     const mojis = [...Stage.getFixedMojis(), ...Stage.getErasingMojis(), ...Player.getPlayingMojis()];
-    const batankyuAnimationRatio = getBatankyuAnimationRatio(frame);
+    const batankyuAnimationRatio = MojiMoji.getBatankyuAnimationRatio(frame);
     const zenkeshiAnimationState = Stage.getZenkeshiAnimationState(frame);
     const wordHistory = Player.getWordHistory();
     const { next, wNext } = Player.getNextMojis();
@@ -78,7 +78,7 @@ export const Game: FC = () => {
                 <Next centerChar={next.center!.char} movableChar={next.movable!.char} />
                 <Next centerChar={wNext.center!.char} movableChar={wNext.movable!.char} />
             </div>
-            <button className={showHistoryButton} onClick={open} disabled={mode !== 'batankyu'}>
+            <button className={showHistoryButton} onClick={open} disabled={MojiMoji.mode !== 'batankyu'}>
                 履歴
             </button>
             <GameStatusBoard score={Score.score} time={0} maxCombo={0} wordsCount={wordHistory.length} />
