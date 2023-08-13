@@ -13,6 +13,7 @@ import { board, game, showHistoryButton, startButton } from './Game.css';
 import Next from './Next';
 import useCountDown from '../hooks/useCountDown';
 import HistoryDialog from './HistoryDialog';
+import { GameStatusBoard } from './GameStatusBoard/GameStatusBoard';
 
 // まずステージを整える
 const initialFrame = initialize();
@@ -61,7 +62,6 @@ export const Game: FC = () => {
     const zenkeshiAnimationState = Stage.getZenkeshiAnimationState(frame);
     const wordHistory = Player.getWordHistory();
     const { next, wNext } = Player.getNextMojis();
-
     return (
         <div className={game}>
             <button className={startButton} onClick={() => setCountDownStarted(true)}>
@@ -81,6 +81,7 @@ export const Game: FC = () => {
             <button className={showHistoryButton} onClick={open} disabled={mode !== 'batankyu'}>
                 履歴
             </button>
+            <GameStatusBoard score={Score.score} time={0} maxCombo={0} wordsCount={wordHistory.length} />
             <Dictionary word={wordHistory[wordHistory.length - 1] ?? ''} />
             <HistoryDialog history={wordHistory} isOpen={isOpen} onClose={close} />
         </div>
