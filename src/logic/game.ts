@@ -141,7 +141,7 @@ class MojiMoji {
                 break;
             }
             case 'batankyu': {
-                break;
+                return frame;
             }
         }
 
