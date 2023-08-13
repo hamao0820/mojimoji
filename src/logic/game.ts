@@ -18,7 +18,7 @@ type GameMode =
     | 'gameOver'
     | 'batankyu';
 
-let mode: GameMode; // ゲームの現在の状況
+export let mode: GameMode; // ゲームの現在の状況
 let combinationCount = 0; // 何連鎖かどうか
 let gameOverFrame: number; // ゲームオーバーになったフレーム
 

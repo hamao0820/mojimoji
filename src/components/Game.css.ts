@@ -19,3 +19,11 @@ export const startButton = style({
     fontSize: '1.1rem',
     fontWeight: 'bold',
 });
+
+export const showHistoryButton = style({
+    width: '100px',
+    height: '50px',
+    textAlign: 'center',
+    fontSize: '1.1rem',
+    fontWeight: 'bold',
+});

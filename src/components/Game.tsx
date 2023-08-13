@@ -1,7 +1,7 @@
-import { FC, useEffect, useRef, useState } from 'react';
+import { FC, useCallback, useEffect, useRef, useState } from 'react';
 import { GameStage } from './GameStage';
 import { Scoreboard } from './ScoreBoard';
-import { initialize, tick, getBatankyuAnimationRatio } from '../logic/game';
+import { initialize, tick, getBatankyuAnimationRatio, mode } from '../logic/game';
 import { Score } from '../logic/score';
 import { Stage } from '../logic/stage';
 import { Player } from '../logic/player';
@@ -9,9 +9,10 @@ import { GameOver } from './GameOver';
 import { Zenkeshi } from './Zenkeshi';
 import { Config } from '../logic/config';
 import Dictionary from './Dictionary';
-import { board, game, startButton } from './Game.css';
+import { board, game, showHistoryButton, startButton } from './Game.css';
 import Next from './Next';
 import useCountDown from '../hooks/useCountDown';
+import HistoryDialog from './HistoryDialog';
 
 // まずステージを整える
 const initialFrame = initialize();
@@ -21,6 +22,7 @@ export const Game: FC = () => {
     const [frame, setFrame] = useState(initialFrame); // ゲームの現在フレーム（1/60秒ごとに1追加される）
     const [gameStarted, setGameStarted] = useState(false);
     const [countDownStarted, setCountDownStarted] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
     const count = useCountDown(
         3,
         () => {
@@ -46,7 +48,13 @@ export const Game: FC = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [gameStarted]);
 
-    // console.log(frame)
+    const open = useCallback((): void => {
+        setIsOpen(true);
+    }, []);
+
+    const close = useCallback((): void => {
+        setIsOpen(false);
+    }, []);
 
     const mojis = [...Stage.getFixedMojis(), ...Stage.getErasingMojis(), ...Player.getPlayingMojis()];
     const batankyuAnimationRatio = getBatankyuAnimationRatio(frame);
@@ -70,7 +78,11 @@ export const Game: FC = () => {
                 <Next centerChar={next.center!.char} movableChar={next.movable!.char} />
                 <Next centerChar={wNext.center!.char} movableChar={wNext.movable!.char} />
             </div>
+            <button className={showHistoryButton} onClick={open} disabled={mode !== 'batankyu'}>
+                履歴
+            </button>
             <Dictionary word={wordHistory[wordHistory.length - 1] ?? ''} />
+            <HistoryDialog history={wordHistory} isOpen={isOpen} onClose={close} />
         </div>
     );
 };
