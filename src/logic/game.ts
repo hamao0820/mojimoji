@@ -71,7 +71,7 @@ class MojiMoji {
                 if (this.comboCount === null) this.comboCount = 0;
                 if (eraseInfo) {
                     this.mode = 'erasing';
-                    this.comboCount++;
+                    this.comboCount += eraseInfo.wordList.length;
                     // 得点を計算する
                     Score.addErasingScore(this.comboCount, eraseInfo.piece, eraseInfo.longestWordLength);
                     Stage.hideZenkeshi(frame);
