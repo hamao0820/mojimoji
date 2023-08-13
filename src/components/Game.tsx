@@ -81,7 +81,12 @@ export const Game: FC = () => {
             <button className={showHistoryButton} onClick={open} disabled={MojiMoji.mode !== 'batankyu'}>
                 履歴
             </button>
-            <GameStatusBoard score={Score.score} time={0} maxCombo={0} wordsCount={wordHistory.length} />
+            <GameStatusBoard
+                score={Score.score}
+                time={0}
+                maxCombo={MojiMoji.maxCombo ?? 0}
+                wordsCount={wordHistory.length}
+            />
             <Dictionary word={wordHistory[wordHistory.length - 1] ?? ''} />
             <HistoryDialog history={wordHistory} isOpen={isOpen} onClose={close} />
         </div>
