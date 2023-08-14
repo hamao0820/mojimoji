@@ -67,19 +67,18 @@ export const Game: FC = () => {
     const { next, wNext } = Player.getNextMojis();
     return (
         <div className={game}>
-            {isFirstRender.current ? (
-                <button className={startButton} onClick={() => setGameStarted(true)}>
-                    スタート
-                </button>
-            ) : (
-                MojiMoji.mode === 'batankyu' && (
-                    <button className={replayButton} onClick={() => setGameStarted(false)}>
-                        もう一度
-                    </button>
-                )
-            )}
-
             <div style={{ width: Config.mojiImgWidth * Config.stageCols }} className={board}>
+                {isFirstRender.current ? (
+                    <button className={startButton} onClick={() => setGameStarted(true)}>
+                        スタート
+                    </button>
+                ) : (
+                    MojiMoji.mode === 'batankyu' && (
+                        <button className={replayButton} onClick={() => setGameStarted(false)}>
+                            もう一度
+                        </button>
+                    )
+                )}
                 {zenkeshiAnimationState && <Zenkeshi {...zenkeshiAnimationState} />}
                 <GameStage mojis={mojis} />
                 {MojiMoji.mode === 'batankyu' && <GameOver />}

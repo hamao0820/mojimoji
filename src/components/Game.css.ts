@@ -14,6 +14,10 @@ export const game = style({
 export const startButton = style({
     width: '100px',
     height: '50px',
+    position: 'absolute',
+    zIndex: 10,
+    top: '50%',
+    left: 'calc(50% - 50px)',
     textAlign: 'center',
     fontSize: '1.1rem',
     fontWeight: 'bold',
@@ -22,6 +26,10 @@ export const startButton = style({
 export const replayButton = style({
     width: '100px',
     height: '50px',
+    position: 'absolute',
+    zIndex: 10,
+    top: '50%',
+    left: 'calc(50% - 50px)',
     textAlign: 'center',
     fontSize: '1.1rem',
     fontWeight: 'bold',

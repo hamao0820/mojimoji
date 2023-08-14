@@ -106,8 +106,8 @@ export class Stage {
     static checkReading(frame: number) {
         if (this.readyStartFrame === null) {
             this.readyStartFrame = frame;
-            const audio = new Audio('../../public/sound/Countdown03-1.mp3');
-            audio.play();
+            // const audio = new Audio('../../public/sound/Countdown03-1.mp3');
+            // audio.play();
         }
         const ratio = (frame - this.readyStartFrame) / Config.readyFrame;
         if (ratio > 1) {
