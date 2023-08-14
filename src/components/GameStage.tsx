@@ -13,14 +13,22 @@ export const GameStage: FC<GameStageProps> = ({ mojis }) => {
             style={{
                 width: Config.mojiImgWidth * Config.stageCols,
                 height: Config.mojiImgHeight * Config.stageRows,
-                backgroundColor: Config.stageBackgroundColor,
-                backgroundImage: 'url(img/mojimoji.png)',
-                backgroundBlendMode: 'lighten',
+                backgroundColor: '#ffffff',
             }}
         >
-            {mojis.map(({ mojiId, ...moji }) => (
-                <MojiImage key={`${mojiId} ${crypto.randomUUID()}`} {...moji} />
-            ))}
+            <div
+                style={{
+                    width: Config.mojiImgWidth * Config.stageCols,
+                    height: Config.mojiImgHeight * Config.stageRows,
+                    backgroundColor: Config.stageBackgroundColor,
+                    backgroundImage: 'url(img/mojimoji.png)',
+                    backgroundBlendMode: 'lighten',
+                }}
+            >
+                {mojis.map(({ mojiId, ...moji }) => (
+                    <MojiImage key={`${mojiId} ${crypto.randomUUID()}`} {...moji} />
+                ))}
+            </div>
         </div>
     );
 };

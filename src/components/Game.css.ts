@@ -9,6 +9,9 @@ export const game = style({
     // width: '100vw',
     // height: '100vh',
     display: 'flex',
+    backgroundImage: `url(img/school_room.png)`,
+    backgroundSize: 'cover',
+    backgroundRepeat: 'no-repeat',
 });
 
 export const startButton = style({
