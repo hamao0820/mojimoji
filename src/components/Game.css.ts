@@ -6,9 +6,11 @@ export const board = style({
 });
 
 export const game = style({
-    // width: '100vw',
-    // height: '100vh',
+    width: '100vw',
+    height: '100vh',
     display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundImage: `url(img/school_room.png)`,
     backgroundSize: 'cover',
     backgroundRepeat: 'no-repeat',

@@ -113,10 +113,12 @@ export const Game: FC = () => {
 
             <GameStatusBoard
                 score={Score.score}
-                time={0}
+                time={'0'}
                 maxCombo={MojiMoji.maxCombo ?? 0}
                 wordsCount={wordHistory.length}
+                zenkeshiCount={0}
             />
+
             <HistoryDialog history={wordHistory} isOpen={isOpen} onClose={close} />
         </div>
     );

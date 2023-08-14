@@ -1,19 +1,17 @@
 import { FC } from 'react';
-import Score from './Score';
-import Time from './Time';
-import MaxComb from './MaxComb';
-import WordsCount from './WordsCount';
 import { gameStatusBoard } from './GameStatusBoard.css';
+import GameStatus from './GameStatus';
 
-type Props = { score: number; time: number; maxCombo: number; wordsCount: number };
+type Props = { score: number; time: string; maxCombo: number; wordsCount: number; zenkeshiCount: number };
 
-export const GameStatusBoard: FC<Props> = ({ score, time, maxCombo, wordsCount }) => {
+export const GameStatusBoard: FC<Props> = ({ score, time, maxCombo, wordsCount, zenkeshiCount }) => {
     return (
         <div className={gameStatusBoard}>
-            <Score score={score} />
-            <Time time={time} />
-            <MaxComb maxCombo={maxCombo} />
-            <WordsCount wordsCount={wordsCount} />
+            <GameStatus title="タイム" value={time} />
+            <GameStatus title="単語数" value={wordsCount} />
+            <GameStatus title="全消し回数" value={zenkeshiCount} />
+            <GameStatus title="最大コンボ" value={maxCombo} />
+            <GameStatus title="スコア" value={score} />
         </div>
     );
 };
