@@ -9,7 +9,15 @@ import { GameOver } from './GameOver';
 import { Zenkeshi } from './Zenkeshi';
 import { Config } from '../logic/config';
 import Dictionary from './Dictionary';
-import { board, game, showHistoryButton, startButton, replayButton, nextMojiContainer } from './Game.css';
+import {
+    board,
+    game,
+    showHistoryButton,
+    startButton,
+    replayButton,
+    nextMojiContainer,
+    buttonContainer,
+} from './Game.css';
 import Next from './Next';
 import HistoryDialog from './HistoryDialog';
 import { GameStatusBoard } from './GameStatusBoard/GameStatusBoard';
@@ -75,9 +83,18 @@ export const Game: FC = () => {
                     </button>
                 ) : (
                     MojiMoji.mode === 'batankyu' && (
-                        <button className={replayButton} onClick={() => setGameStarted(false)}>
-                            もう一度
-                        </button>
+                        <div className={buttonContainer}>
+                            <button className={replayButton} onClick={() => setGameStarted(false)}>
+                                もう一度
+                            </button>
+                            <button
+                                className={showHistoryButton}
+                                onClick={open}
+                                disabled={MojiMoji.mode !== 'batankyu'}
+                            >
+                                単語一覧
+                            </button>
+                        </div>
                     )
                 )}
                 {zenkeshiAnimationState && <Zenkeshi {...zenkeshiAnimationState} />}
@@ -94,9 +111,6 @@ export const Game: FC = () => {
                 )}
             </div>
 
-            <button className={showHistoryButton} onClick={open} disabled={MojiMoji.mode !== 'batankyu'}>
-                履歴
-            </button>
             <GameStatusBoard
                 score={Score.score}
                 time={0}

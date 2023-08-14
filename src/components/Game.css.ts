@@ -26,13 +26,22 @@ export const startButton = style({
     fontWeight: 'bold',
 });
 
-export const replayButton = style({
-    width: '100px',
+export const buttonContainer = style({
+    width: '250px',
     height: '50px',
     position: 'absolute',
     zIndex: 10,
     top: '50%',
-    left: 'calc(50% - 50px)',
+    left: 'calc(50% - 125px)',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    textAlign: 'center',
+});
+
+export const replayButton = style({
+    width: '100px',
+    height: '50px',
     textAlign: 'center',
     fontSize: '1.1rem',
     fontWeight: 'bold',
