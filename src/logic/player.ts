@@ -36,6 +36,8 @@ export class Player {
     private static wordHistory: string[];
 
     static initialize() {
+        this.centerMoji = null;
+        this.movableMoji = null;
         this.nextCenterMoji = generateMoji();
         this.nextMovableMoji = generateMoji();
         this.wNextCenterMoji = generateMoji();

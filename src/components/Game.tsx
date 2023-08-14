@@ -9,7 +9,7 @@ import { GameOver } from './GameOver';
 import { Zenkeshi } from './Zenkeshi';
 import { Config } from '../logic/config';
 import Dictionary from './Dictionary';
-import { board, game, showHistoryButton, startButton } from './Game.css';
+import { board, game, showHistoryButton, startButton, replayButton } from './Game.css';
 import Next from './Next';
 import HistoryDialog from './HistoryDialog';
 import { GameStatusBoard } from './GameStatusBoard/GameStatusBoard';
@@ -22,6 +22,7 @@ export const Game: FC = () => {
     const [frame, setFrame] = useState(initialFrame); // ゲームの現在フレーム（1/60秒ごとに1追加される）
     const [gameStarted, setGameStarted] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
+    const isFirstRender = useRef(true);
 
     const loop = () => {
         reqIdRef.current = requestAnimationFrame(loop); // 1/60秒後にもう一度呼び出す
@@ -40,6 +41,17 @@ export const Game: FC = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [gameStarted]);
 
+    useEffect(() => {
+        if (gameStarted) return;
+        reqIdRef.current = undefined;
+        setFrame(MojiMoji.initialize());
+        if (isFirstRender.current) {
+            isFirstRender.current = false;
+            return;
+        }
+        setGameStarted(true);
+    }, [gameStarted]);
+
     const open = useCallback((): void => {
         setIsOpen(true);
     }, []);
@@ -55,9 +67,18 @@ export const Game: FC = () => {
     const { next, wNext } = Player.getNextMojis();
     return (
         <div className={game}>
-            <button className={startButton} onClick={() => setGameStarted(true)}>
-                スタート
-            </button>
+            {isFirstRender.current ? (
+                <button className={startButton} onClick={() => setGameStarted(true)}>
+                    スタート
+                </button>
+            ) : (
+                MojiMoji.mode === 'batankyu' && (
+                    <button className={replayButton} onClick={() => setGameStarted(false)}>
+                        もう一度
+                    </button>
+                )
+            )}
+
             <div style={{ width: Config.mojiImgWidth * Config.stageCols }} className={board}>
                 {zenkeshiAnimationState && <Zenkeshi {...zenkeshiAnimationState} />}
                 <GameStage mojis={mojis} />
