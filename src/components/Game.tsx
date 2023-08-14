@@ -9,7 +9,7 @@ import { GameOver } from './GameOver';
 import { Zenkeshi } from './Zenkeshi';
 import { Config } from '../logic/config';
 import Dictionary from './Dictionary';
-import { board, game, showHistoryButton, startButton, replayButton } from './Game.css';
+import { board, game, showHistoryButton, startButton, replayButton, nextMojiContainer } from './Game.css';
 import Next from './Next';
 import HistoryDialog from './HistoryDialog';
 import { GameStatusBoard } from './GameStatusBoard/GameStatusBoard';
@@ -84,13 +84,13 @@ export const Game: FC = () => {
                 {MojiMoji.mode === 'batankyu' && <GameOver />}
                 <Scoreboard score={Score.score} />
                 {!Stage.getWordDictionaryIsHidden() && <Dictionary word={erasingWord ?? ''} />}
+                {gameStarted && (
+                    <div className={nextMojiContainer}>
+                        <Next centerChar={next.center!.char} movableChar={next.movable!.char} isW={false} />
+                        <Next centerChar={wNext.center!.char} movableChar={wNext.movable!.char} isW={true} />
+                    </div>
+                )}
             </div>
-            {gameStarted && (
-                <div>
-                    <Next centerChar={next.center!.char} movableChar={next.movable!.char} />
-                    <Next centerChar={wNext.center!.char} movableChar={wNext.movable!.char} />
-                </div>
-            )}
 
             <button className={showHistoryButton} onClick={open} disabled={MojiMoji.mode !== 'batankyu'}>
                 履歴

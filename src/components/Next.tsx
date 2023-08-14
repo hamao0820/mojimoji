@@ -1,15 +1,17 @@
 import { FC } from 'react';
 import { MojiChar } from '../logic/moji';
 import { Config } from '../logic/config';
+import { nextMoji, wNextMoji } from './Game.css';
 
 type Props = {
     centerChar: MojiChar;
     movableChar: MojiChar;
+    isW: boolean;
 };
 
-const Next: FC<Props> = ({ centerChar, movableChar }) => {
+const Next: FC<Props> = ({ centerChar, movableChar, isW }) => {
     return (
-        <div>
+        <div className={isW ? nextMoji : wNextMoji}>
             <div>
                 <img
                     src={imagePath(movableChar)}
