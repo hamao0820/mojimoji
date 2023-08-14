@@ -13,6 +13,7 @@ import { board, game, showHistoryButton, startButton, replayButton, nextMojiCont
 import Next from './Next';
 import HistoryDialog from './HistoryDialog';
 import { GameStatusBoard } from './GameStatusBoard/GameStatusBoard';
+import CrossImage from './CrossImage';
 
 // まずステージを整える
 const initialFrame = MojiMoji.initialize();
@@ -80,6 +81,7 @@ export const Game: FC = () => {
                     )
                 )}
                 {zenkeshiAnimationState && <Zenkeshi {...zenkeshiAnimationState} />}
+                <CrossImage />
                 <GameStage mojis={mojis} />
                 {MojiMoji.mode === 'batankyu' && <GameOver />}
                 <Scoreboard score={Score.score} />
