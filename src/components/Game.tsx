@@ -86,10 +86,13 @@ export const Game: FC = () => {
                 <Scoreboard score={Score.score} />
                 {!Stage.getWordDictionaryIsHidden() && <Dictionary word={erasingWord ?? ''} />}
             </div>
-            <div>
-                <Next centerChar={next.center!.char} movableChar={next.movable!.char} />
-                <Next centerChar={wNext.center!.char} movableChar={wNext.movable!.char} />
-            </div>
+            {gameStarted && (
+                <div>
+                    <Next centerChar={next.center!.char} movableChar={next.movable!.char} />
+                    <Next centerChar={wNext.center!.char} movableChar={wNext.movable!.char} />
+                </div>
+            )}
+
             <button className={showHistoryButton} onClick={open} disabled={MojiMoji.mode !== 'batankyu'}>
                 履歴
             </button>

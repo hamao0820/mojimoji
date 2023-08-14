@@ -4,6 +4,7 @@ import { Score } from './score';
 import { Input } from './input';
 
 type GameMode =
+    | 'ready'
     | 'start'
     | 'checkFall'
     | 'fall'
@@ -32,7 +33,7 @@ class MojiMoji {
         // プレイヤーの準備をする
         Player.initialize();
 
-        this.mode = 'start';
+        this.mode = 'ready';
         this.comboCount = 0;
         this.maxCombo = 0;
 
@@ -41,6 +42,13 @@ class MojiMoji {
 
     static tick(frame: number): number {
         switch (this.mode) {
+            case 'ready': {
+                // ゲーム開始の準備をする
+                if (!Stage.checkReading(frame)) {
+                    this.mode = 'start';
+                }
+                break;
+            }
             case 'start': {
                 // 最初は、もしかしたら空中にあるかもしれないもじを自由落下させるところからスタート
                 this.mode = 'checkFall';

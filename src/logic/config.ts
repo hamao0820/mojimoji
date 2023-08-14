@@ -10,6 +10,8 @@ export const Config = {
     stageBackgroundColor: 'rgba(255, 255, 255, 0.5)', // ステージの背景色
     scoreBackgroundColor: '#000000', // スコアの背景色
 
+    readyFrame: 120, // 何フレームで開始するか
+
     freeFallingSpeed: 16, // 自由落下のスピード
     eraseMojiCount: 4, // 何個以上揃ったら消えるか
     eraseAnimationDuration: 60, // 何フレームでぷよを消すか

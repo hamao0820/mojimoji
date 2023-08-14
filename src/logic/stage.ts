@@ -14,6 +14,7 @@ type ZenkeshiAnimationState = {
 };
 
 export class Stage {
+    private static readyStartFrame: number | null;
     static board: (null | MojiOnStage)[][];
     private static fallingMojiList: FallingMoji[];
     private static eraseStartFrame: number;
@@ -35,6 +36,7 @@ export class Stage {
                 this.board[y][x] = null;
             }
         }
+        this.readyStartFrame = null;
         this.fallingMojiList = [];
         this.erasingMojiInfoList = [];
         this.erasingMojiLineList = [];
@@ -98,6 +100,21 @@ export class Stage {
                 top: y * Config.mojiImgHeight,
             },
         };
+    }
+
+    // 準備中かどうかチェックする
+    static checkReading(frame: number) {
+        if (this.readyStartFrame === null) {
+            this.readyStartFrame = frame;
+            const audio = new Audio('../../public/sound/Countdown03-1.mp3');
+            audio.play();
+        }
+        const ratio = (frame - this.readyStartFrame) / Config.readyFrame;
+        if (ratio > 1) {
+            this.readyStartFrame = null;
+            return false;
+        }
+        return true;
     }
 
     // 自由落下をチェックする
