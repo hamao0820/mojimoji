@@ -72,10 +72,10 @@ export class Stage {
         const showRatio = Math.min((frame - this.zenkeshiShowStartFrame) / Config.zenkeshiAnimationFrame, 1);
         const hideRatio =
             this.zenkeshiHideStartFrame !== null
-                ? Math.min((frame - this.zenkeshiHideStartFrame) / Config.zenkeshiAnimationFrame, 1)
+                ? Math.min((frame - this.zenkeshiHideStartFrame) / Config.showZenkeshiFrame, 1)
                 : 0;
-
         if (hideRatio === 1) {
+            this.zenkeshiShowStartFrame = null;
             return null;
         }
 
@@ -251,6 +251,5 @@ export class Stage {
     static hideZenkeshi(frame: number) {
         // 全消しを消去する
         this.zenkeshiHideStartFrame = frame;
-        this.zenkeshiShowStartFrame = null;
     }
 }

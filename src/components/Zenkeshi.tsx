@@ -10,11 +10,11 @@ export const Zenkeshi: FC<ZenkeshiProps> = ({ showRatio, hideRatio }) => {
     const startTop = Config.mojiImgHeight * Config.stageRows;
     const endTop = (Config.mojiImgHeight * Config.stageRows) / 3;
     const top = (endTop - startTop) * showRatio + startTop;
-    const opacity = 1 - hideRatio;
+    const opacity = hideRatio > 0.8 ? 1 - hideRatio : 1;
 
     return (
         <img
-            src="img/zenkeshi.png"
+            src="img/sukkiri.png"
             style={{
                 position: 'absolute',
                 top,

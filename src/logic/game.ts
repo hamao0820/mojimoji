@@ -80,13 +80,13 @@ class MojiMoji {
                     this.comboCount += eraseInfo.wordList.length;
                     // 得点を計算する
                     Score.addErasingScore(this.comboCount, eraseInfo.piece, eraseInfo.longestWordLength);
-                    Stage.hideZenkeshi(frame);
                     Player.addWordHistory(...eraseInfo.wordList);
                 } else {
                     if (Stage.getFixedMojis().length === 0 && this.comboCount > 0) {
                         // 全消しの処理をする
                         Stage.showZenkeshi(frame);
                         Score.addZenkeshiScore();
+                        Stage.hideZenkeshi(frame);
                     }
                     if (this.maxCombo === null) this.maxCombo = 0;
                     this.maxCombo = Math.max(this.maxCombo, this.comboCount);
