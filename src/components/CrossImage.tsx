@@ -1,19 +1,8 @@
-import { Config } from '../logic/config';
+// import { Config } from '../logic/config';
+import { crossImage } from './CrossImage.css';
 
 const CrossImage = () => {
-    return (
-        <img
-            src={'img/batsu.png'}
-            style={{
-                position: 'absolute',
-                left: '120px',
-                top: 0,
-                width: Math.floor(Config.mojiImgWidth),
-                height: Math.floor(Config.mojiImgHeight),
-                opacity: 0.5,
-            }}
-        />
-    );
+    return <img src={'img/batsu.png'} className={crossImage} />;
 };
 
 export default CrossImage;

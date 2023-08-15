@@ -8,6 +8,7 @@ type ScoreboardProps = {
 
 const digitImageWidth = 53;
 const digitImageHeight = 67;
+// TODO
 const digitWidth = (digitImageWidth / digitImageHeight) * Config.fontHeight;
 
 const maxDigits = Math.floor((Config.stageCols * Config.mojiImgWidth) / digitWidth);
@@ -15,14 +16,7 @@ const maxDigits = Math.floor((Config.stageCols * Config.mojiImgWidth) / digitWid
 export const Scoreboard: FC<ScoreboardProps> = ({ score }) => {
     const digits = useMemo(() => splitIntoDigits(score), [score]);
     return (
-        <div
-            className={scoreBoard}
-            style={{
-                backgroundColor: Config.scoreBackgroundColor,
-                width: Config.mojiImgWidth * Config.stageCols,
-                height: Config.fontHeight,
-            }}
-        >
+        <div className={scoreBoard}>
             {digits.map((digit, i) => (
                 <img key={i} src={imagePath(digit)} width={digitWidth} />
             ))}

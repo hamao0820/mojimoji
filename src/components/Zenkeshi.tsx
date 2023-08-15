@@ -7,6 +7,7 @@ type ZenkeshiProps = {
 };
 
 export const Zenkeshi: FC<ZenkeshiProps> = ({ showRatio, hideRatio }) => {
+    // TODO:
     const startTop = Config.mojiImgHeight * Config.stageRows;
     const endTop = (Config.mojiImgHeight * Config.stageRows) / 3;
     const top = (endTop - startTop) * showRatio + startTop;

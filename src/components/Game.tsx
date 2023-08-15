@@ -7,7 +7,6 @@ import { Stage } from '../logic/stage';
 import { Player } from '../logic/player';
 import { GameOver } from './GameOver';
 import { Zenkeshi } from './Zenkeshi';
-import { Config } from '../logic/config';
 import Dictionary from './Dictionary';
 import {
     board,
@@ -76,7 +75,7 @@ export const Game: FC = () => {
     const { next, wNext } = Player.getNextMojis();
     return (
         <div className={game}>
-            <div style={{ width: Config.mojiImgWidth * Config.stageCols }} className={board}>
+            <div className={board}>
                 {isFirstRender.current ? (
                     <button className={startButton} onClick={() => setGameStarted(true)}>
                         スタート

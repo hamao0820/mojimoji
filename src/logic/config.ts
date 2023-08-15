@@ -1,14 +1,11 @@
 export const Config = {
-    fontHeight: 33,
-
     stageCols: 6, // ステージの横の個数
     stageRows: 12, // ステージの縦の個数
 
-    mojiImgWidth: 40, // ぷよぷよ画像の幅
-    mojiImgHeight: 40, // ぷよぷよ画像の高さ
-
-    stageBackgroundColor: 'rgba(255, 255, 255, 0.5)', // ステージの背景色
-    scoreBackgroundColor: '#000000', // スコアの背景色
+    // TODO: 削除
+    mojiImgWidth: 62, // ぷよぷよ画像の幅
+    mojiImgHeight: 62, // ぷよぷよ画像の高さ
+    fontHeight: 33, // フォントの高さ
 
     readyFrame: 120, // 何フレームで開始するか
 
@@ -26,8 +23,3 @@ export const Config = {
     zenkeshiAnimationFrame: 9, // 全消し時のアニメーションのフレーム数
     showZenkeshiFrame: 120, // 全消し時のアニメーションのインターバル
 };
-
-// フィールドサイズ追加
-// 高さが全部入るように調整
-Config.mojiImgHeight = (window.innerHeight - Config.fontHeight) / Config.stageRows;
-Config.mojiImgWidth = Config.mojiImgHeight;

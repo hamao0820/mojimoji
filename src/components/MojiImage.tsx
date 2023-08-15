@@ -1,6 +1,6 @@
 import { FC } from 'react';
-import { Config } from '../logic/config';
 import { MojiChar } from '../logic/moji';
+import { mojiImage } from './MojiImage.css';
 
 type MojiImageProps = {
     char: MojiChar;
@@ -15,13 +15,11 @@ export const MojiImage: FC<MojiImageProps> = ({ char, position, hidden }) => {
     return (
         <img
             src={imagePath(char)}
+            className={mojiImage}
             style={{
-                position: 'absolute',
                 visibility: hidden ? 'hidden' : 'visible',
                 left: position.left,
                 top: position.top,
-                width: Math.floor(Config.mojiImgWidth),
-                height: Math.floor(Config.mojiImgHeight),
             }}
         />
     );

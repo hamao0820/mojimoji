@@ -72,7 +72,7 @@ export class Player {
         this.mojiStatus = {
             x: 2, // 中心もじの位置: 左から2列目
             y: -1, // 画面上部ギリギリから出てくる
-            left: 2 * Config.mojiImgWidth,
+            left: 2 * Config.mojiImgWidth, //TODO
             top: -1 * Config.mojiImgHeight,
             dx: 0, // 動くもじの相対位置: 動くもじは上方向にある
             dy: -1,

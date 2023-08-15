@@ -1,7 +1,6 @@
 import { FC } from 'react';
 import { MojiChar } from '../logic/moji';
-import { Config } from '../logic/config';
-import { nextMoji, wNextMoji } from './Game.css';
+import { nextMoji, nextMojiImg, wNextMoji } from './Game.css';
 
 type Props = {
     centerChar: MojiChar;
@@ -13,16 +12,10 @@ const Next: FC<Props> = ({ centerChar, movableChar, isW }) => {
     return (
         <div className={isW ? nextMoji : wNextMoji}>
             <div>
-                <img
-                    src={imagePath(movableChar)}
-                    style={{ width: Math.floor(Config.mojiImgWidth), height: Math.floor(Config.mojiImgHeight) }}
-                />
+                <img src={imagePath(movableChar)} className={nextMojiImg} />
             </div>
             <div>
-                <img
-                    src={imagePath(centerChar)}
-                    style={{ width: Math.floor(Config.mojiImgWidth), height: Math.floor(Config.mojiImgHeight) }}
-                />
+                <img src={imagePath(centerChar)} className={nextMojiImg} />
             </div>
         </div>
     );

@@ -96,7 +96,7 @@ export class Stage {
             mojiId,
             char: char,
             position: {
-                left: x * Config.mojiImgWidth,
+                left: x * Config.mojiImgWidth, // TODO
                 top: y * Config.mojiImgHeight,
             },
         };

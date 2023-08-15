@@ -1,8 +1,11 @@
 import { style } from '@vanilla-extract/css';
+import { vars } from '../vars.css';
+import { Config } from '../logic/config';
 
 export const board = style({
     position: 'relative',
     margin: '0 auto',
+    width: `calc(${vars.mojiImgWidth} * ${Config.stageCols})`,
 });
 
 export const game = style({
@@ -95,4 +98,9 @@ export const wNextMoji = style({
     justifyContent: 'center',
     alignItems: 'center',
     textAlign: 'center',
+});
+
+export const nextMojiImg = style({
+    width: vars.mojiImgWidth,
+    height: vars.mojiImgHeight,
 });
