@@ -1,6 +1,5 @@
 import { FC, useCallback, useEffect, useRef, useState } from 'react';
 import { GameStage } from './GameStage';
-import { Scoreboard } from './ScoreBoard';
 import { MojiMoji } from '../logic/game';
 import { Score } from '../logic/score';
 import { Stage } from '../logic/stage';
@@ -100,7 +99,6 @@ export const Game: FC = () => {
                 <CrossImage />
                 <GameStage mojis={mojis} />
                 {MojiMoji.mode === 'batankyu' && <GameOver />}
-                <Scoreboard score={Score.score} />
                 {!Stage.getWordDictionaryIsHidden() && <Dictionary word={erasingWord ?? ''} />}
                 {gameStarted && (
                     <div className={nextMojiContainer}>
