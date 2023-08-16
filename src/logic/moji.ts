@@ -13,6 +13,8 @@ export type MojiPosition = {
 export type MojiOnStage = Moji & {
     position: MojiPosition;
     hidden?: boolean;
+    movable?: boolean;
+    rotation?: number;
 };
 
 export const mojiChars: MojiChar[] = ['ウ', 'イ', 'シ', 'ク', 'ツ', 'ヨ', 'キ', 'リ', 'カ'];

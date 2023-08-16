@@ -95,10 +95,7 @@ export class Stage {
         this.board[y][x] = {
             mojiId,
             char: char,
-            position: {
-                left: x * Config.mojiImgWidth, // TODO
-                top: y * Config.mojiImgHeight,
-            },
+            position: { left: x, top: y },
         };
     }
 
@@ -142,7 +139,7 @@ export class Stage {
                     // 落ちるリストに入れる
                     this.fallingMojiList.push({
                         position: cell.position,
-                        destinationTop: dst * Config.mojiImgHeight,
+                        destinationTop: dst,
                         falling: true,
                     });
                     // 落ちるものがあったことを記録しておく

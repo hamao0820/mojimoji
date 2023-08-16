@@ -72,8 +72,8 @@ export class Player {
         this.mojiStatus = {
             x: 2, // 中心もじの位置: 左から2列目
             y: -1, // 画面上部ギリギリから出てくる
-            left: 2 * Config.mojiImgWidth, //TODO
-            top: -1 * Config.mojiImgHeight,
+            left: 2,
+            top: -1,
             dx: 0, // 動くもじの相対位置: 動くもじは上方向にある
             dy: -1,
             rotation: 90, // 動くもじの角度は90度（上向き）
@@ -99,13 +99,11 @@ export class Player {
             {
                 ...this.movableMoji,
                 position: {
-                    left:
-                        this.mojiStatus.left +
-                        Math.cos((this.mojiStatus.rotation * Math.PI) / 180) * Config.mojiImgWidth,
-                    top:
-                        this.mojiStatus.top -
-                        Math.sin((this.mojiStatus.rotation * Math.PI) / 180) * Config.mojiImgHeight,
+                    left: this.mojiStatus.left,
+                    top: this.mojiStatus.top,
                 },
+                movable: true,
+                rotation: this.mojiStatus.rotation,
             },
         ];
     }
@@ -141,7 +139,7 @@ export class Player {
                 // 下キーが押されているならもっと加速する
                 this.mojiStatus.top += Config.playerDownSpeed;
             }
-            if (Math.floor(this.mojiStatus.top / Config.mojiImgHeight) != y) {
+            if (Math.floor(this.mojiStatus.top) != y) {
                 // ブロックの境を超えたので、再チェックする
                 // 下キーが押されていたら、得点を加算する
                 if (isDownPressed) {
@@ -162,7 +160,7 @@ export class Player {
                     return;
                 } else {
                     // 境を超えたらブロックにぶつかった。位置を調節して、接地を開始する
-                    this.mojiStatus.top = y * Config.mojiImgHeight;
+                    this.mojiStatus.top = y;
                     this.groundFrame = 1;
                     return;
                 }
@@ -228,8 +226,8 @@ export class Player {
             if (canMove) {
                 // 動かすことが出来るので、移動先情報をセットして移動状態にする
                 this.actionStartFrame = frame;
-                this.moveSource = x * Config.mojiImgWidth;
-                this.moveDestination = (x + cx) * Config.mojiImgWidth;
+                this.moveSource = x;
+                this.moveDestination = x + cx;
                 this.mojiStatus.x += cx;
                 return 'moving';
             }
@@ -316,12 +314,12 @@ export class Player {
                         this.mojiStatus.y -= 1;
                         this.groundFrame = 0;
                     }
-                    this.mojiStatus.top = this.mojiStatus.y * Config.mojiImgHeight;
+                    this.mojiStatus.top = this.mojiStatus.y;
                 }
                 // 回すことが出来るので、回転後の情報をセットして回転状態にする
                 this.actionStartFrame = frame;
-                this.rotateBeforeLeft = x * Config.mojiImgHeight;
-                this.rotateAfterLeft = (x + cx) * Config.mojiImgHeight;
+                this.rotateBeforeLeft = x;
+                this.rotateAfterLeft = x + cx;
                 this.rotateFromRotation = this.mojiStatus.rotation;
                 // 次の状態を先に設定しておく
                 this.mojiStatus.x += cx;
