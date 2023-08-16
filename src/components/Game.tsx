@@ -5,7 +5,6 @@ import { Score } from '../logic/score';
 import { Stage } from '../logic/stage';
 import { Player } from '../logic/player';
 import { GameOver } from './GameOver';
-import { Zenkeshi } from './Zenkeshi';
 import Dictionary from './Dictionary';
 import {
     board,
@@ -20,6 +19,7 @@ import Next from './Next';
 import HistoryDialog from './HistoryDialog';
 import { GameStatusBoard } from './GameStatusBoard/GameStatusBoard';
 import CrossImage from './CrossImage';
+import { ZenkeshiImage } from './ZenkeshiImage';
 
 // まずステージを整える
 const initialFrame = MojiMoji.initialize();
@@ -95,7 +95,7 @@ export const Game: FC = () => {
                         </div>
                     )
                 )}
-                {zenkeshiAnimationState && <Zenkeshi {...zenkeshiAnimationState} />}
+                {zenkeshiAnimationState && <ZenkeshiImage {...zenkeshiAnimationState} />}
                 <CrossImage />
                 <GameStage mojis={mojis} />
                 {MojiMoji.mode === 'batankyu' && <GameOver />}

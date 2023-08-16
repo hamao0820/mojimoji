@@ -8,7 +8,6 @@ export const Config = {
     eraseMojiCount: 4, // 何個以上揃ったら消えるか
     eraseAnimationDuration: 60, // 何フレームでぷよを消すか
 
-    mojiChars: 9, // 何色のぷよを使うか
     playerFallingSpeed: 0.015, // プレイ中の自然落下のスピード
     playerDownSpeed: 0.25, // プレイ中の下キー押下時の落下スピード
     playerGroundFrame: 20, // 何フレーム接地したらぷよを固定するか
