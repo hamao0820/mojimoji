@@ -78,7 +78,7 @@ for (let y = 0; y < Config.stageRows; y++) {
     }
 }
 
-const correctWords = data.data;
+const correctWords = new Set<string>([...data.data]);
 
 export const getLineJoinedWord = (board: (null | MojiOnStage)[][], line: Position[]): string => {
     let word = '';
@@ -96,4 +96,4 @@ export const getAllJoinedWordsAndLine = (board: (null | MojiOnStage)[][]): [stri
         .filter(([word]) => word !== '');
 
 export const getCorrectWordsAndLines = (board: (null | MojiOnStage)[][]): [string, Position[]][] =>
-    getAllJoinedWordsAndLine(board).filter(([word]) => correctWords.includes(word));
+    getAllJoinedWordsAndLine(board).filter(([word]) => correctWords.has(word));

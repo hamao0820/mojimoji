@@ -1,5 +1,5 @@
 import { FC, Fragment, useCallback, useEffect, useRef } from 'react';
-import kanaKanjiMap from '../../public/toKanji.json';
+// import kanaKanjiMap from '../../public/toKanji.json';
 import { dialog, dialogContent } from './HistroyDialog.css';
 import { RemoveScroll } from 'react-remove-scroll';
 
@@ -43,7 +43,8 @@ const HistoryDialog: FC<Props> = ({ history, isOpen, onClose }) => {
             <dialog ref={dialogRef} onClick={handleClickDialog} className={dialog}>
                 <div className={dialogContent} onClick={handleClickContent}>
                     {history.map((word) => {
-                        const kanjiList = kanaKanjiMap[word as keyof typeof kanaKanjiMap];
+                        // TODO
+                        const kanjiList: string[] = [];
                         return (
                             <div key={crypto.randomUUID()}>
                                 {word}[

@@ -1,4 +1,4 @@
-export type MojiChar = 'ウ' | 'イ' | 'シ' | 'ク' | 'ツ' | 'ヨ' | 'キ' | 'リ' | 'カ';
+export type MojiChar = 'ん' | 'い' | 'う' | 'し' | 'か' | 'つ' | 'く' | 'き' | 'る' | 'よ';
 
 export type Moji = {
     mojiId: number;
@@ -17,4 +17,4 @@ export type MojiOnStage = Moji & {
     rotation?: number;
 };
 
-export const mojiChars: MojiChar[] = ['ウ', 'イ', 'シ', 'ク', 'ツ', 'ヨ', 'キ', 'リ', 'カ'];
+export const mojiChars: MojiChar[] = ['ん', 'い', 'う', 'し', 'か', 'つ', 'く', 'き', 'る', 'よ'];
