@@ -14,12 +14,14 @@ import {
     replayButton,
     nextMojiContainer,
     buttonContainer,
+    openHowToPlayDialogButton,
 } from './Game.css';
 import Next from './Next';
 import HistoryDialog from './HistoryDialog';
 import { GameStatusBoard } from './GameStatusBoard/GameStatusBoard';
 import CrossImage from './CrossImage';
 import { ZenkeshiImage } from './ZenkeshiImage';
+import HowToPlayDialog from './HowToPlayDialog/HowToPlayDialog';
 
 // まずステージを整える
 const initialFrame = MojiMoji.initialize();
@@ -28,7 +30,8 @@ export const Game: FC = () => {
     const reqIdRef = useRef<number>();
     const [frame, setFrame] = useState(initialFrame); // ゲームの現在フレーム（1/60秒ごとに1追加される）
     const [gameStarted, setGameStarted] = useState(false);
-    const [isOpen, setIsOpen] = useState(false);
+    const [isOpenHistoryDialog, setIsOpenHistoryDialog] = useState(false);
+    const [isOpenHowToPlayDialog, setIsOpenHowToPlayDialog] = useState(false);
     const isFirstRender = useRef(true);
 
     const loop = () => {
@@ -52,19 +55,24 @@ export const Game: FC = () => {
         if (gameStarted) return;
         reqIdRef.current = undefined;
         setFrame(MojiMoji.initialize());
-        if (isFirstRender.current) {
-            isFirstRender.current = false;
-            return;
-        }
+        if (isFirstRender.current) return;
         setGameStarted(true);
     }, [gameStarted]);
 
-    const open = useCallback((): void => {
-        setIsOpen(true);
+    const openHistoryDialog = useCallback((): void => {
+        setIsOpenHistoryDialog(true);
     }, []);
 
-    const close = useCallback((): void => {
-        setIsOpen(false);
+    const closeHitoryDialog = useCallback((): void => {
+        setIsOpenHistoryDialog(false);
+    }, []);
+
+    const openHowToPlayDialog = useCallback((): void => {
+        setIsOpenHowToPlayDialog(true);
+    }, []);
+
+    const closeHowToPlayDialog = useCallback((): void => {
+        setIsOpenHowToPlayDialog(false);
     }, []);
 
     const mojis = [...Stage.getFixedMojis(), ...Stage.getErasingMojis(), ...Player.getPlayingMojis()];
@@ -74,9 +82,21 @@ export const Game: FC = () => {
     const { next, wNext } = Player.getNextMojis();
     return (
         <div className={game}>
+            <button className={openHowToPlayDialogButton} onClick={openHowToPlayDialog}>
+                遊び方
+            </button>
             <div className={board}>
                 {isFirstRender.current ? (
-                    <button className={startButton} onClick={() => setGameStarted(true)}>
+                    <button
+                        className={startButton}
+                        onClick={() => {
+                            setGameStarted(true);
+                            if (isFirstRender.current) {
+                                isFirstRender.current = false;
+                                return;
+                            }
+                        }}
+                    >
                         スタート
                     </button>
                 ) : (
@@ -87,7 +107,7 @@ export const Game: FC = () => {
                             </button>
                             <button
                                 className={showHistoryButton}
-                                onClick={open}
+                                onClick={openHistoryDialog}
                                 disabled={MojiMoji.mode !== 'batankyu'}
                             >
                                 単語一覧
@@ -115,8 +135,8 @@ export const Game: FC = () => {
                 wordsCount={wordHistory.length}
                 zenkeshiCount={0}
             />
-
-            <HistoryDialog history={wordHistory} isOpen={isOpen} onClose={close} />
+            <HistoryDialog history={wordHistory} isOpen={isOpenHistoryDialog} onClose={closeHitoryDialog} />
+            <HowToPlayDialog isOpen={isOpenHowToPlayDialog} onClose={closeHowToPlayDialog} />
         </div>
     );
 };

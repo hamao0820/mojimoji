@@ -104,3 +104,14 @@ export const nextMojiImg = style({
     width: vars.mojiImgWidth,
     height: vars.mojiImgHeight,
 });
+
+export const openHowToPlayDialogButton = style({
+    position: 'absolute',
+    top: '10px',
+    right: '10px',
+    width: '100px',
+    height: '50px',
+    textAlign: 'center',
+    fontSize: '1.1rem',
+    fontWeight: 'bold',
+});
