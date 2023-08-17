@@ -20,7 +20,7 @@ const fadeRightAnime = keyframes({
 export const dictionary = style({
     width: '300px',
     position: 'absolute',
-    right: '-30%',
+    right: 0,
     bottom: '30%',
     backgroundColor: 'rgba(255,255,255,0)',
     zIndex: 100,

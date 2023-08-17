@@ -10,7 +10,7 @@ type Props = {
 
 const Next: FC<Props> = ({ centerChar, movableChar, isW }) => {
     return (
-        <div className={isW ? nextMoji : wNextMoji}>
+        <div className={isW ? wNextMoji : nextMoji}>
             <div>
                 <img src={imagePath(movableChar)} className={nextMojiImg} />
             </div>

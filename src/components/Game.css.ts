@@ -6,17 +6,24 @@ export const board = style({
     position: 'relative',
     margin: '0 auto',
     width: `calc(${vars.mojiImgWidth} * ${Config.stageCols})`,
+    overflow: 'hidden',
 });
 
-export const game = style({
+export const gameFiled = style({
     width: '100vw',
     height: '100vh',
     display: 'flex',
-    justifyContent: 'center',
+    justifyContent: 'space-evenly',
     alignItems: 'center',
     backgroundImage: `url(img/school_room.png)`,
     backgroundSize: 'cover',
     backgroundRepeat: 'no-repeat',
+});
+
+export const playField = style({
+    display: 'flex',
+    justifyContent: 'center',
+    position: 'relative',
 });
 
 export const startButton = style({
@@ -62,24 +69,22 @@ export const showHistoryButton = style({
 
 export const nextMojiContainer = style({
     width: '150px',
-    height: '270px',
-    position: 'absolute',
+    height: '250px',
+    position: 'relative',
     zIndex: 10,
-    top: '10px',
-    right: '-160px',
     textAlign: 'center',
     clipPath: 'polygon(0 5%, 50% 0, 50% 35%, 100% 30%, 100% 95%, 50% 100%, 50% 65%, 0 70%)',
     background: 'rgba(0, 0, 0, 0.5)',
     backgroundColor: '#CCFFFF',
+    marginLeft: '15px',
 });
 
 export const nextMoji = style({
     width: '75px',
     height: '140px',
     position: 'absolute',
-    zIndex: 10,
-    top: '120px',
-    right: '0',
+    zIndex: 11,
+    top: '25px',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
@@ -91,8 +96,9 @@ export const wNextMoji = style({
     width: '75px',
     height: '140px',
     position: 'absolute',
-    zIndex: 11,
-    top: '30px',
+    zIndex: 10,
+    top: '100px',
+    right: '0',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',

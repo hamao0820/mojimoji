@@ -8,13 +8,14 @@ import { GameOver } from './GameOver';
 import Dictionary from './Dictionary';
 import {
     board,
-    game,
+    gameFiled,
     showHistoryButton,
     startButton,
     replayButton,
     nextMojiContainer,
     buttonContainer,
     openHowToPlayDialogButton,
+    playField,
 } from './Game.css';
 import Next from './Next';
 import HistoryDialog from './HistoryDialog';
@@ -81,62 +82,68 @@ export const Game: FC = () => {
     const erasingWord = Stage.getErasingWord();
     const { next, wNext } = Player.getNextMojis();
     return (
-        <div className={game}>
+        <div>
             <button className={openHowToPlayDialogButton} onClick={openHowToPlayDialog}>
                 遊び方
             </button>
-            <div className={board}>
-                {isFirstRender.current ? (
-                    <button
-                        className={startButton}
-                        onClick={() => {
-                            setGameStarted(true);
-                            if (isFirstRender.current) {
-                                isFirstRender.current = false;
-                                return;
-                            }
-                        }}
-                    >
-                        スタート
-                    </button>
-                ) : (
-                    MojiMoji.mode === 'batankyu' && (
-                        <div className={buttonContainer}>
-                            <button className={replayButton} onClick={() => setGameStarted(false)}>
-                                もう一度
-                            </button>
-                            <button
-                                className={showHistoryButton}
-                                onClick={openHistoryDialog}
-                                disabled={MojiMoji.mode !== 'batankyu'}
-                            >
-                                単語一覧
-                            </button>
-                        </div>
-                    )
-                )}
-                {zenkeshiAnimationState && <ZenkeshiImage {...zenkeshiAnimationState} />}
-                <CrossImage />
-                <GameStage mojis={mojis} />
-                {MojiMoji.mode === 'batankyu' && <GameOver />}
-                {!Stage.getWordDictionaryIsHidden() && <Dictionary word={erasingWord ?? ''} />}
-                {gameStarted && (
-                    <div className={nextMojiContainer}>
-                        <Next centerChar={next.center!.char} movableChar={next.movable!.char} isW={false} />
-                        <Next centerChar={wNext.center!.char} movableChar={wNext.movable!.char} isW={true} />
-                    </div>
-                )}
-            </div>
-
-            <GameStatusBoard
-                score={Score.score}
-                time={'0'}
-                maxCombo={MojiMoji.maxCombo ?? 0}
-                wordsCount={wordHistory.length}
-                zenkeshiCount={0}
-            />
             <HistoryDialog history={wordHistory} isOpen={isOpenHistoryDialog} onClose={closeHitoryDialog} />
             <HowToPlayDialog isOpen={isOpenHowToPlayDialog} onClose={closeHowToPlayDialog} />
+            <div className={gameFiled}>
+                <div className={playField}>
+                    <div className={board}>
+                        {isFirstRender.current ? (
+                            <button
+                                className={startButton}
+                                onClick={() => {
+                                    setGameStarted(true);
+                                    if (isFirstRender.current) {
+                                        isFirstRender.current = false;
+                                        return;
+                                    }
+                                }}
+                            >
+                                スタート
+                            </button>
+                        ) : (
+                            MojiMoji.mode === 'batankyu' && (
+                                <div className={buttonContainer}>
+                                    <button className={replayButton} onClick={() => setGameStarted(false)}>
+                                        もう一度
+                                    </button>
+                                    <button
+                                        className={showHistoryButton}
+                                        onClick={openHistoryDialog}
+                                        disabled={MojiMoji.mode !== 'batankyu'}
+                                    >
+                                        単語一覧
+                                    </button>
+                                </div>
+                            )
+                        )}
+                        {zenkeshiAnimationState && <ZenkeshiImage {...zenkeshiAnimationState} />}
+                        <CrossImage />
+                        <GameStage mojis={mojis} />
+                        {MojiMoji.mode === 'batankyu' && <GameOver />}
+                    </div>
+                    {!Stage.getWordDictionaryIsHidden() && <Dictionary word={erasingWord ?? ''} />}
+                    <div className={nextMojiContainer}>
+                        {gameStarted && (
+                            <>
+                                <Next centerChar={next.center!.char} movableChar={next.movable!.char} isW={false} />
+                                <Next centerChar={wNext.center!.char} movableChar={wNext.movable!.char} isW={true} />
+                            </>
+                        )}
+                    </div>
+                </div>
+
+                <GameStatusBoard
+                    score={Score.score}
+                    time={'0'}
+                    maxCombo={MojiMoji.maxCombo ?? 0}
+                    wordsCount={wordHistory.length}
+                    zenkeshiCount={0}
+                />
+            </div>
         </div>
     );
 };
