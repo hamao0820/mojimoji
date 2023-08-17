@@ -1,4 +1,4 @@
-import data from '../../public/top11.json';
+import data from '../../public/top15.json';
 import { Config } from '../logic/config';
 import { MojiOnStage } from '../logic/moji';
 
