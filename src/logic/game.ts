@@ -2,6 +2,7 @@ import { Stage } from './stage';
 import { Player } from './player';
 import { Score } from './score';
 import { Input } from './input';
+import { Combo } from './combo';
 
 type GameMode =
     | 'ready'
@@ -20,8 +21,6 @@ type GameMode =
 
 class MojiMoji {
     static mode: GameMode | null; // ゲームの現在の状況
-    private static comboCount: number | null; // 何連鎖かどうか
-    static maxCombo: number | null; // 最大連鎖数:
 
     static initialize(): number {
         // ステージを準備する
@@ -32,10 +31,10 @@ class MojiMoji {
         Score.initialize();
         // プレイヤーの準備をする
         Player.initialize();
+        // コンボの準備をする
+        Combo.initialize();
 
         this.mode = 'ready';
-        this.comboCount = 0;
-        this.maxCombo = 0;
 
         return 0;
     }
@@ -74,24 +73,21 @@ class MojiMoji {
             case 'checkErase': {
                 // 消せるかどうか判定する
                 const eraseInfo = Stage.checkErase(frame);
-                if (this.comboCount === null) this.comboCount = 0;
                 if (eraseInfo) {
                     this.mode = 'erasing';
-                    this.comboCount += eraseInfo.wordList.length;
+                    Combo.addCombo(eraseInfo.wordList.length);
                     // 得点を計算する
-                    Score.addErasingScore(this.comboCount, eraseInfo.piece, eraseInfo.longestWordLength);
+                    Score.addErasingScore(Combo.getCombo(), eraseInfo.piece, eraseInfo.longestWordLength);
                     Player.addWordHistory(...eraseInfo.wordList);
                 } else {
-                    if (Stage.getFixedMojis().length === 0 && this.comboCount > 0) {
+                    if (Stage.getFixedMojis().length === 0 && Combo.getCombo() > 0) {
                         // 全消しの処理をする
                         Stage.showZenkeshi(frame);
                         Stage.addZenkeshiCount();
                         Score.addZenkeshiScore();
                         Stage.hideZenkeshi(frame);
                     }
-                    if (this.maxCombo === null) this.maxCombo = 0;
-                    this.maxCombo = Math.max(this.maxCombo, this.comboCount);
-                    this.comboCount = 0;
+                    Combo.resetCombo();
                     // 消せなかったら、新しいもじを登場させる
                     this.mode = 'newMoji';
                 }

@@ -23,6 +23,7 @@ import { GameStatusBoard } from './GameStatusBoard/GameStatusBoard';
 import CrossImage from './CrossImage';
 import { ZenkeshiImage } from './ZenkeshiImage';
 import HowToPlayDialog from './HowToPlayDialog/HowToPlayDialog';
+import { Combo } from '../logic/combo';
 
 // まずステージを整える
 const initialFrame = MojiMoji.initialize();
@@ -139,7 +140,7 @@ export const Game: FC = () => {
                 <GameStatusBoard
                     score={Score.score}
                     time={'0'}
-                    maxCombo={MojiMoji.maxCombo ?? 0}
+                    maxCombo={Combo.getMaxCombo()}
                     wordsCount={wordHistory.length}
                     zenkeshiCount={Stage.getZenkeshiCount()}
                 />
