@@ -75,7 +75,6 @@ class MojiMoji {
                 const eraseInfo = Stage.checkErase(frame);
                 if (eraseInfo) {
                     this.mode = 'erasing';
-                    Combo.addCombo(eraseInfo.wordList.length);
                     // 得点を計算する
                     Score.addErasingScore(Combo.getCombo(), eraseInfo.piece, eraseInfo.longestWordLength);
                     Player.addWordHistory(...eraseInfo.wordList);

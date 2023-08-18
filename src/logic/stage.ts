@@ -1,4 +1,5 @@
 import { getCorrectWordsAndLines } from '../utility/judgeWord';
+import { Combo } from './combo';
 import { Config } from './config';
 import { MojiOnStage, MojiChar, MojiPosition } from './moji';
 
@@ -24,6 +25,7 @@ export class Stage {
     private static erasingWordList: string[];
     private static erasingMojiIsHidden: boolean;
     private static wordDictionaryIsHidden: boolean;
+    private static comboMessageIsHidden: boolean;
     private static zenkeshiCount: number;
     private static zenkeshiShowStartFrame: number | null;
     private static zenkeshiHideStartFrame: number | null;
@@ -47,6 +49,7 @@ export class Stage {
         this.zenkeshiShowStartFrame = null;
         this.zenkeshiHideStartFrame = null;
         this.wordDictionaryIsHidden = true;
+        this.comboMessageIsHidden = true;
     }
 
     static getFixedMojis(): MojiOnStage[] {
@@ -65,6 +68,10 @@ export class Stage {
 
     static getWordDictionaryIsHidden(): boolean {
         return this.wordDictionaryIsHidden;
+    }
+
+    static getComboMessageIsHidden(): boolean {
+        return this.comboMessageIsHidden;
     }
 
     static getZenkeshiAnimationState(frame: number): ZenkeshiAnimationState | null {
@@ -218,11 +225,17 @@ export class Stage {
             return false;
         }
 
+        if (elapsedFrame === 1) {
+            Combo.incrementCombo();
+            this.comboMessageIsHidden = false;
+        }
+
         if (ratio > 1) {
             this.erasingMojiLineList.shift();
             this.erasingMojiLineIdList.shift();
             this.erasingWordList.shift();
             this.wordDictionaryIsHidden = true;
+            this.comboMessageIsHidden = true;
             this.eraseStartFrame = frame;
         } else if (ratio > 0.75) {
             this.wordDictionaryIsHidden = false;

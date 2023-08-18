@@ -14,10 +14,10 @@ export class Combo {
         return this.maxCombo ?? 0;
     }
 
-    static addCombo(combo: number): void {
+    static incrementCombo(): void {
         if (this.combo === null) this.combo = 0;
         if (this.maxCombo === null) this.maxCombo = 0;
-        this.combo += combo;
+        this.combo++;
         if (this.combo > this.maxCombo) {
             this.maxCombo = this.combo;
         }

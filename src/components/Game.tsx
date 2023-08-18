@@ -5,7 +5,7 @@ import { Score } from '../logic/score';
 import { Stage } from '../logic/stage';
 import { Player } from '../logic/player';
 import { GameOver } from './GameOver';
-import Dictionary from './Dictionary';
+// import Dictionary from './Dictionary';
 import {
     board,
     gameFiled,
@@ -24,6 +24,7 @@ import CrossImage from './CrossImage';
 import { ZenkeshiImage } from './ZenkeshiImage';
 import HowToPlayDialog from './HowToPlayDialog/HowToPlayDialog';
 import { Combo } from '../logic/combo';
+import ComboMessage from './ComboMessage';
 
 // まずステージを整える
 const initialFrame = MojiMoji.initialize();
@@ -80,8 +81,9 @@ export const Game: FC = () => {
     const mojis = [...Stage.getFixedMojis(), ...Stage.getErasingMojis(), ...Player.getPlayingMojis()];
     const zenkeshiAnimationState = Stage.getZenkeshiAnimationState(frame);
     const wordHistory = Player.getWordHistory();
-    const erasingWord = Stage.getErasingWord();
+    // const erasingWord = Stage.getErasingWord();
     const { next, wNext } = Player.getNextMojis();
+
     return (
         <div>
             <button className={openHowToPlayDialogButton} onClick={openHowToPlayDialog}>
@@ -126,7 +128,8 @@ export const Game: FC = () => {
                         <GameStage mojis={mojis} />
                         {MojiMoji.mode === 'batankyu' && <GameOver />}
                     </div>
-                    {!Stage.getWordDictionaryIsHidden() && <Dictionary word={erasingWord ?? ''} />}
+                    {/* {!Stage.getWordDictionaryIsHidden() && <Dictionary word={erasingWord ?? ''} />} */}
+                    {!Stage.getComboMessageIsHidden() && <ComboMessage combo={Combo.getCombo()} />}
                     <div className={nextMojiContainer}>
                         {gameStarted && (
                             <>
