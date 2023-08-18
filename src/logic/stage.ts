@@ -24,6 +24,7 @@ export class Stage {
     private static erasingWordList: string[];
     private static erasingMojiIsHidden: boolean;
     private static wordDictionaryIsHidden: boolean;
+    private static zenkeshiCount: number;
     private static zenkeshiShowStartFrame: number | null;
     private static zenkeshiHideStartFrame: number | null;
 
@@ -42,6 +43,7 @@ export class Stage {
         this.erasingMojiLineList = [];
         this.erasingMojiLineIdList = [];
         this.erasingWordList = [];
+        this.zenkeshiCount = 0;
         this.zenkeshiShowStartFrame = null;
         this.zenkeshiHideStartFrame = null;
         this.wordDictionaryIsHidden = true;
@@ -237,6 +239,14 @@ export class Stage {
         }
 
         return true;
+    }
+
+    static getZenkeshiCount(): number {
+        return this.zenkeshiCount;
+    }
+
+    static addZenkeshiCount() {
+        this.zenkeshiCount++;
     }
 
     static showZenkeshi(frame: number) {

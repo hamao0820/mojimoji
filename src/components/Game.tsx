@@ -141,7 +141,7 @@ export const Game: FC = () => {
                     time={'0'}
                     maxCombo={MojiMoji.maxCombo ?? 0}
                     wordsCount={wordHistory.length}
-                    zenkeshiCount={0}
+                    zenkeshiCount={Stage.getZenkeshiCount()}
                 />
             </div>
         </div>

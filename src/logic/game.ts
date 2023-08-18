@@ -85,6 +85,7 @@ class MojiMoji {
                     if (Stage.getFixedMojis().length === 0 && this.comboCount > 0) {
                         // 全消しの処理をする
                         Stage.showZenkeshi(frame);
+                        Stage.addZenkeshiCount();
                         Score.addZenkeshiScore();
                         Stage.hideZenkeshi(frame);
                     }
