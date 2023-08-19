@@ -148,7 +148,7 @@ export const Game: FC = () => {
 
                 <GameStatusBoard
                     score={Score.score}
-                    time={'0'}
+                    level={Player.getLevel()}
                     maxCombo={Combo.getMaxCombo()}
                     wordsCount={wordHistory.length}
                     zenkeshiCount={Stage.getZenkeshiCount()}
