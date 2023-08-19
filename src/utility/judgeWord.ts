@@ -1,6 +1,6 @@
-import data from '../../public/top15.json';
 import { Config } from '../logic/config';
 import { MojiOnStage } from '../logic/moji';
+import dict from './dict';
 
 type Position = { x: number; y: number };
 const checkPositionList: Position[][] = [];
@@ -78,7 +78,7 @@ for (let y = 0; y < Config.stageRows; y++) {
     }
 }
 
-const correctWords = new Set<string>([...data.data]);
+const correctWords = new Set<string>(Object.keys(dict));
 
 export const getLineJoinedWord = (board: (null | MojiOnStage)[][], line: Position[]): string => {
     let word = '';
