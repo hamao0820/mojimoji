@@ -5,7 +5,7 @@ import { Score } from '../logic/score';
 import { Stage } from '../logic/stage';
 import { Player } from '../logic/player';
 import { GameOver } from './GameOver';
-// import Dictionary from './Dictionary';
+import Dictionary from './Dictionary';
 import {
     board,
     gameFiled,
@@ -16,6 +16,7 @@ import {
     buttonContainer,
     openHowToPlayDialogButton,
     playField,
+    playFiledSide,
 } from './Game.css';
 import Next from './Next';
 import HistoryDialog from './HistoryDialog';
@@ -81,7 +82,6 @@ export const Game: FC = () => {
     const mojis = [...Stage.getFixedMojis(), ...Stage.getErasingMojis(), ...Player.getPlayingMojis()];
     const zenkeshiAnimationState = Stage.getZenkeshiAnimationState(frame);
     const wordHistory = Player.getWordHistory();
-    // const erasingWord = Stage.getErasingWord();
     const { next, wNext } = Player.getNextMojis();
 
     return (
@@ -128,15 +128,21 @@ export const Game: FC = () => {
                         <GameStage mojis={mojis} />
                         {MojiMoji.mode === 'batankyu' && <GameOver />}
                     </div>
-                    {/* {!Stage.getWordDictionaryIsHidden() && <Dictionary word={erasingWord ?? ''} />} */}
                     {!Stage.getComboMessageIsHidden() && <ComboMessage combo={Combo.getCombo()} />}
-                    <div className={nextMojiContainer}>
-                        {gameStarted && (
-                            <>
-                                <Next centerChar={next.center!.char} movableChar={next.movable!.char} isW={false} />
-                                <Next centerChar={wNext.center!.char} movableChar={wNext.movable!.char} isW={true} />
-                            </>
-                        )}
+                    <div className={playFiledSide}>
+                        <div className={nextMojiContainer}>
+                            {gameStarted && (
+                                <>
+                                    <Next centerChar={next.center!.char} movableChar={next.movable!.char} isW={false} />
+                                    <Next
+                                        centerChar={wNext.center!.char}
+                                        movableChar={wNext.movable!.char}
+                                        isW={true}
+                                    />
+                                </>
+                            )}
+                        </div>
+                        <Dictionary word={Stage.getErasingWord() ?? ''} />
                     </div>
                 </div>
 

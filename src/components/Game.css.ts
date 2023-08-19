@@ -71,12 +71,10 @@ export const nextMojiContainer = style({
     width: '150px',
     height: '250px',
     position: 'relative',
-    zIndex: 10,
     textAlign: 'center',
     clipPath: 'polygon(0 5%, 50% 0, 50% 35%, 100% 30%, 100% 95%, 50% 100%, 50% 65%, 0 70%)',
     background: 'rgba(0, 0, 0, 0.5)',
     backgroundColor: '#CCFFFF',
-    marginLeft: '15px',
 });
 
 export const nextMoji = style({
@@ -120,4 +118,12 @@ export const openHowToPlayDialogButton = style({
     textAlign: 'center',
     fontSize: '1.1rem',
     fontWeight: 'bold',
+});
+
+export const playFiledSide = style({
+    height: `calc(${vars.mojiImgHeight} * ${Config.stageRows})`,
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    marginLeft: '15px',
 });
