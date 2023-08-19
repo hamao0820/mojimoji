@@ -134,7 +134,7 @@ export class Player {
         }
         if (!isBlocked) {
             // 下にブロックがないなら自由落下してよい。プレイヤー操作中の自由落下処理をする
-            this.mojiStatus.top += Config.playerFallingSpeed * (1 + 0.5 * (this.getLevel() - 1));
+            this.mojiStatus.top += Config.playerFallingSpeed * (1 + 0.2 * (this.getLevel() - 1));
             if (isDownPressed) {
                 // 下キーが押されているならもっと加速する
                 this.mojiStatus.top += Config.playerDownSpeed;
