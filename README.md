@@ -2,13 +2,25 @@
 
 上から降ってくる「もじ」を揃えて単語を作って行くゲームです。
 
-## 遊び方
+## 準備
 
--   ⬅︎ ➡︎ : 左右移動
--   ⬆︎ / x : 時計回り
--   z : 反時計回り
+-   Clone the repository
 
-単語は 3 文字上 6 文字以下です。単語判定は左からと上からです。
+```zsh
+git clone https://github.com/shunsukehamada/mojimoji.git && cd mojimoji
+```
+
+-   インストール
+
+```zsh
+npm install
+```
+
+## 実行
+
+```zsh
+npm run dev
+```
 
 ## クレジット
 
