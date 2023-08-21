@@ -20,7 +20,7 @@ const Dictionary: FC<Props> = ({ word }) => {
             <img src="img/book.png" className={bookImage} />
             <div className={container}>
                 <div className={kanaContainer}>
-                    <div className={contentText}>{word}</div>
+                    <div className={contentText}>{word === '' ? '' : dict[word][0].originalRuby}</div>
                 </div>
                 <div className={wordContainer}>
                     <div className={contentText}>

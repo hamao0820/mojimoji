@@ -50,7 +50,7 @@ const HistoryDialog: FC<Props> = ({ history, isOpen, onClose }) => {
                                 <ol>
                                     {contentList.map((content) => (
                                         <li key={crypto.randomUUID()}>
-                                            <div className={selectionWord}>{content.writing}</div>
+                                            <div className={selectionWord}>{content.writing}{(word !== content.originalRuby) && `(${content.originalRuby})` }</div>
                                             <div className={selectionMean}>{content.mean}</div>
                                         </li>
                                     ))}
