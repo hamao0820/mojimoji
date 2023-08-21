@@ -29,7 +29,7 @@ const Dictionary: FC<Props> = ({ word }) => {
                         ) : (
                             <>
                                 <span className={cornerBracket}>【</span>
-                                {dict[word][0].word}
+                                {dict[word][0].writing}
                                 <span className={cornerBracket}>】</span>
                             </>
                         )}
