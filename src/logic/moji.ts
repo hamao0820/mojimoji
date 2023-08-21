@@ -15,7 +15,8 @@ export type MojiChar =
     | 'さ'
     | 'た'
     | 'に'
-    | 'も';
+    | 'も'
+    | 'す';
 
 export type Moji = {
     mojiId: number;
@@ -52,4 +53,5 @@ export const mojiChars: MojiChar[] = [
     'た',
     'に',
     'も',
+    'す',
 ];
