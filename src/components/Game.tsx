@@ -17,6 +17,7 @@ import {
     openHowToPlayDialogButton,
     playField,
     playFiledSide,
+    main,
 } from './Game.css';
 import Next from './Next';
 import HistoryDialog from './HistoryDialog';
@@ -85,7 +86,7 @@ export const Game: FC = () => {
     const { next, wNext } = Player.getNextMojis();
 
     return (
-        <div>
+        <div className={main}>
             <button className={openHowToPlayDialogButton} onClick={openHowToPlayDialog}>
                 遊び方
             </button>

@@ -2,6 +2,11 @@ import { style } from '@vanilla-extract/css';
 import { vars } from '../vars.css';
 import { Config } from '../logic/config';
 
+export const main = style({
+    width: '100vw',
+    height: '100vh',
+});
+
 export const board = style({
     position: 'relative',
     margin: '0 auto',
