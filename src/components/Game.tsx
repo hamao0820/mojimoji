@@ -27,6 +27,7 @@ import { ZenkeshiImage } from './ZenkeshiImage';
 import HowToPlayDialog from './HowToPlayDialog/HowToPlayDialog';
 import { Combo } from '../logic/combo';
 import ComboMessage from './ComboMessage';
+import { AudioManager } from '../logic/audioManager';
 
 // まずステージを整える
 const initialFrame = MojiMoji.initialize();
@@ -99,6 +100,7 @@ export const Game: FC = () => {
                             <button
                                 className={startButton}
                                 onClick={() => {
+                                    AudioManager.playBGM();
                                     setGameStarted(true);
                                     if (isFirstRender.current) {
                                         isFirstRender.current = false;

@@ -3,6 +3,7 @@ import { Player } from './player';
 import { Score } from './score';
 import { Input } from './input';
 import { Combo } from './combo';
+import { AudioManager } from './audioManager';
 
 type GameMode =
     | 'ready'
@@ -85,6 +86,7 @@ class MojiMoji {
                         Stage.addZenkeshiCount();
                         Score.addZenkeshiScore();
                         Stage.hideZenkeshi(frame);
+                        AudioManager.playZenkeshi();
                     }
                     Combo.resetCombo();
                     // 消せなかったら、新しいもじを登場させる
@@ -137,6 +139,8 @@ class MojiMoji {
                 break;
             }
             case 'gameOver': {
+                AudioManager.playGameOver();
+
                 // ばたんきゅーの準備をする
                 this.mode = 'batankyu';
                 break;

@@ -3,6 +3,7 @@ import { Stage } from './stage';
 import { Score } from './score';
 import { Input } from './input';
 import { Moji, MojiChar, mojiChars, MojiOnStage } from './moji';
+import { AudioManager } from './audioManager';
 
 type MojiStatus = {
     x: number; // 中心もじの位置: 左から2列目
@@ -366,6 +367,7 @@ export class Player {
         if (!this.centerMoji || !this.movableMoji) {
             throw new Error('centerMoji or movableMoji is null');
         }
+        AudioManager.playFix();
         // 現在のもじをステージ上に配置する
         const x = this.mojiStatus.x;
         const y = this.mojiStatus.y;

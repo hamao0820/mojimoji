@@ -1,4 +1,5 @@
 import { getCorrectWordsAndLines } from '../utility/judgeWord';
+import { AudioManager } from './audioManager';
 import { Combo } from './combo';
 import { Config } from './config';
 import { MojiOnStage, MojiChar, MojiPosition } from './moji';
@@ -112,8 +113,7 @@ export class Stage {
     static checkReading(frame: number) {
         if (this.readyStartFrame === null) {
             this.readyStartFrame = frame;
-            // const audio = new Audio('../../public/sound/Countdown03-1.mp3');
-            // audio.play();
+            AudioManager.playReady();
         }
         const ratio = (frame - this.readyStartFrame) / Config.readyFrame;
         if (ratio > 1) {
@@ -228,6 +228,7 @@ export class Stage {
         if (elapsedFrame === 1) {
             Combo.incrementCombo();
             this.comboMessageIsHidden = false;
+            AudioManager.playErase();
         }
 
         if (ratio > 1) {
