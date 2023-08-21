@@ -20,7 +20,7 @@ export const gameFiled = style({
     display: 'flex',
     justifyContent: 'space-evenly',
     alignItems: 'center',
-    backgroundImage: `url(img/bg_school_room2_yuyake.jpg)`,
+    backgroundImage: 'url(/img/bg_school_room2_yuyake.jpg)',
     backgroundSize: 'cover',
     backgroundRepeat: 'no-repeat',
 });

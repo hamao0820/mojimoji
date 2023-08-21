@@ -12,6 +12,6 @@ export const gameStageInner = style({
     width: `calc(${vars.mojiImgHeight} * ${Config.stageCols})`,
     height: `calc(${vars.mojiImgHeight} * ${Config.stageRows})`,
     backgroundColor: vars.stageBackgroundColor,
-    backgroundImage: 'url(img/mojimoji.png)',
+    backgroundImage: 'url(/img/mojimoji.png)',
     backgroundBlendMode: 'lighten',
 });
