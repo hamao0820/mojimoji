@@ -10,11 +10,27 @@ export const dialog = style({
 
 export const dialogContent = style({
     width: '100%',
-    height: '100%',
+    height: 'calc(100% - 5px)',
     borderRadius: '10px',
     overflow: 'auto',
-    padding: '5px 0 5px 5px',
+    margin: '5px 0 5px 5px',
     fontSize: '1.2rem',
     fontWeight: 'bold',
     fontFamily: 'ヒラギノ丸ゴ Pro',
+});
+
+export const title = style({
+    fontSize: '1.5rem',
+    fontWeight: 'bold',
+    fontFamily: 'ヒラギノ丸ゴ Pro',
+});
+
+export const selectionWord = style({
+    fontSize: '1.5rem',
+    fontWeight: 'bold',
+    fontFamily: 'ヒラギノ丸ゴ Pro',
+});
+
+export const selectionMean = style({
+    margin: '0 0 0 0rem',
 });

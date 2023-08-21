@@ -1,7 +1,7 @@
-import { FC, Fragment, useCallback, useEffect, useRef } from 'react';
-// import kanaKanjiMap from '../../public/toKanji.json';
-import { dialog, dialogContent } from './HistroyDialog.css';
+import { FC, useCallback, useEffect, useRef } from 'react';
+import { dialog, dialogContent, selectionMean, selectionWord, title } from './HistroyDialog.css';
 import { RemoveScroll } from 'react-remove-scroll';
+import dict from '../utility/dict';
 
 type Props = {
     history: string[];
@@ -43,20 +43,18 @@ const HistoryDialog: FC<Props> = ({ history, isOpen, onClose }) => {
             <dialog ref={dialogRef} onClick={handleClickDialog} className={dialog}>
                 <div className={dialogContent} onClick={handleClickContent}>
                     {history.map((word) => {
-                        // TODO
-                        const kanjiList: string[] = [];
+                        const contentList = dict[word];
                         return (
                             <div key={crypto.randomUUID()}>
-                                {word}[
-                                {kanjiList.map((kanji, i) => (
-                                    <Fragment key={crypto.randomUUID()}>
-                                        <a href={`https://www.weblio.jp/content/${kanji}`} target="_blank">
-                                            {kanji}
-                                        </a>
-                                        {i !== kanjiList.length - 1 && <p style={{ display: 'inline' }}>/</p>}
-                                    </Fragment>
-                                ))}
-                                ]
+                                <div className={title}>{word}</div>
+                                <ol>
+                                    {contentList.map((content) => (
+                                        <li key={crypto.randomUUID()}>
+                                            <div className={selectionWord}>{content.word}</div>
+                                            <div className={selectionMean}>{content.mean}</div>
+                                        </li>
+                                    ))}
+                                </ol>
                             </div>
                         );
                     })}
