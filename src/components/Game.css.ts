@@ -73,8 +73,8 @@ export const showHistoryButton = style({
 });
 
 export const nextMojiContainer = style({
-    width: '150px',
-    height: '250px',
+    width: `calc(${vars.mojiImgWidth} * 1.2 * 2)`,
+    height: `calc(${vars.mojiImgWidth} * (2.1 * 2 - 1 / 2))`,
     position: 'relative',
     textAlign: 'center',
     clipPath: 'polygon(0 5%, 50% 0, 50% 35%, 100% 30%, 100% 95%, 50% 100%, 50% 65%, 0 70%)',
@@ -83,11 +83,11 @@ export const nextMojiContainer = style({
 });
 
 export const nextMoji = style({
-    width: '75px',
-    height: '140px',
+    width: `calc(${vars.mojiImgWidth} * 1.2)`,
+    height: `calc(${vars.mojiImgWidth} * 2.1)`,
     position: 'absolute',
     zIndex: 11,
-    top: '25px',
+    top: `calc(${vars.mojiImgWidth} / 2.3)`,
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
@@ -96,11 +96,11 @@ export const nextMoji = style({
 });
 
 export const wNextMoji = style({
-    width: '75px',
-    height: '140px',
+    width: `calc(${vars.mojiImgWidth} * 1.2)`,
+    height: `calc(${vars.mojiImgWidth} * 2.1)`,
     position: 'absolute',
     zIndex: 10,
-    top: '100px',
+    top: `calc(${vars.mojiImgWidth} * 1.5)`,
     right: '0',
     display: 'flex',
     flexDirection: 'column',

@@ -24,7 +24,7 @@ export const container = style({
 
 export const kanaContainer = style({
     width: '100%',
-    fontSize: '1rem',
+    fontSize: 'calc(100vh / 50)',
     fontWeight: 'bold',
     color: '#000',
     textAlign: 'left',
@@ -34,7 +34,7 @@ export const kanaContainer = style({
 
 export const wordContainer = style({
     width: '100%',
-    fontSize: '1rem',
+    fontSize: 'calc(100vh / 50)',
     fontWeight: 'bold',
     color: '#000',
     textAlign: 'left',
