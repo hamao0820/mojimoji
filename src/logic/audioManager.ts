@@ -11,8 +11,9 @@ export class AudioManager {
         this.fixAudio = new Audio('sound/Motion-Pop11-1.mp3');
         this.eraseAudio = new Audio('sound/Motion-Pop05-1.mp3');
         this.gameOverAudio = new Audio('sound/Onoma-Negative07-3(Low-Long).mp3');
-        this.bgmAudio = new Audio('sound/husigityan o-ra.mp3');
         this.zenkeshiAudio = new Audio('sound/Onoma-Flash10-4(High-2).mp3');
+
+        this.bgmAudio ??= new Audio('sound/husigityan o-ra.mp3');
     }
 
     static playReady() {

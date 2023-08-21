@@ -34,6 +34,8 @@ class MojiMoji {
         Player.initialize();
         // コンボの準備をする
         Combo.initialize();
+        // オーディオの準備をする
+        AudioManager.initialize();
 
         this.mode = 'ready';
 
